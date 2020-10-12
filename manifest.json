@@ -1,0 +1,51 @@
+{
+	"manifest_version": 2,
+	"name": "BC-Util",
+	"version": "0.0.1",
+	
+	"description": "Additional convenience features for the browser game Bondage Club.",
+	"icons": {
+		"48": "icons/icon-48.png"
+	},
+	
+	"permissions": [
+        "declarativeContent",
+        "activeTab",
+        "storage",
+        "tabs",
+        "http://*/*",
+        "https://*/*"
+	],
+	
+    "web_accessible_resources": [
+        "*"
+    ],
+	
+	"content_scripts":
+	[
+		{
+            "run_at": "document_end",
+			"matches": [
+				"*://*.bondageprojects.com/*",
+				"*://*.bondageprojects.elementfx.com/*"
+			],
+            "all_frames": true,
+			"js": ["Utility/Event.js",
+				"Utility/FunctionCallHook.js",
+				
+				"Utility/Game/UiElements/Button.js",
+				"Utility/Game/UiElements/TextArea.js",
+				
+				"Utility/Game/Characters.js",
+				"Utility/Game/UserInterface.js",
+				"Utility/Game/Wardrobe.js",
+				
+				"Model/WardrobeUtilities/WardrobeUtilities.js",
+				
+				"View/Gui/WardrobeUtilities.js",
+				
+				"Mod.js",
+				"Main.js"]
+		}
+	]
+}
