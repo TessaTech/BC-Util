@@ -122,10 +122,10 @@ Gui.WardrobeUtilities = class
 		if(data != null)
 		{
 			this.wardrobeUtilities.UnpackAll(data)
+			this.wardrobeUtilities.Save()
 
 			this.state = ""
 	
-			//this.CloseImportExportTextArea()
 			this.textAreaImportExport.Hide()
 			this.buttonImportAccept.Hide()
 			this.buttonImportExportCancel.Hide()
@@ -134,10 +134,8 @@ Gui.WardrobeUtilities = class
 
 	OnButtonImportExportCancelClick()
 	{
-
 		this.state = ""
 
-		//this.CloseImportExportTextArea()
 		this.textAreaImportExport.Hide()
 		this.buttonImportAccept.Hide()
 		this.buttonImportExportCancel.Hide()

@@ -14,6 +14,7 @@ Mod = class
 	
 		//Game
 		this.LogLoadSection("Game Interface")
+		this.gameAssets = new Utility.Game.Assets()
 		this.gameCharacters = new Utility.Game.Characters(this.gameAssets)
 		this.gameUserInterface = new Utility.Game.UserInterface()
 		this.gameWardrobe = new Utility.Game.Wardrobe()

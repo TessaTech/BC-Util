@@ -90,6 +90,10 @@ Utility.Game.Wardrobe = class
 			return null
 		}
 		Player.Wardrobe[wardrobeEntryId] = newEntry
+		if(typeof WardrobeCharacter != 'undefined' && WardrobeCharacter.length > wardrobeEntryId)
+		{
+			WardrobeFastLoad(WardrobeCharacter[wardrobeEntryId], wardrobeEntryId)
+		}
 	}
 
 	GetEntryName(wardrobeEntryId)
@@ -108,11 +112,15 @@ Utility.Game.Wardrobe = class
 			return null
 		}
 		Player.WardrobeCharacterNames[wardrobeEntryId] = newName
+		if(typeof WardrobeCharacter != 'undefined' && WardrobeCharacter.length > wardrobeEntryId)
+		{
+			WardrobeCharacter[wardrobeEntryId].Name = newName
+		}
 	}
 
 	Save()
 	{
-		ServerSend("AccountUpdate", { Wardrobe: CharacterCompressWardrobe(Player.Wardrobe) });
+		ServerSend("AccountUpdate", { Wardrobe: CharacterCompressWardrobe(Player.Wardrobe), WardrobeCharacterNames: Player.WardrobeCharacterNames });
 	}
 
 }

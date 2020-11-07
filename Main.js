@@ -42,6 +42,7 @@ function onLoad(event)
 	AddScriptFile("Utility/Game/UiElements/Button.js")
 	AddScriptFile("Utility/Game/UiElements/TextArea.js")
 	
+	AddScriptFile("Utility/Game/Assets.js")
 	AddScriptFile("Utility/Game/Characters.js")
 	AddScriptFile("Utility/Game/UserInterface.js")
 	AddScriptFile("Utility/Game/Wardrobe.js")

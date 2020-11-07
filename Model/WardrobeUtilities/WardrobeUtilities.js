@@ -37,6 +37,7 @@ WardrobeUtilities.WardrobeUtilities = class
 		let entryPackages
 		entryPackages = this.PackAll()
 		localStorage.setItem(this.GetStorageEntryKey(), JSON.stringify(entryPackages))
+		this.gameWardrobe.Save()
 	}
 
 	Load()

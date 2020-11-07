@@ -36,6 +36,7 @@
 				"Utility/Game/UiElements/Button.js",
 				"Utility/Game/UiElements/TextArea.js",
 				
+				"Utility/Game/Assets.js",
 				"Utility/Game/Characters.js",
 				"Utility/Game/UserInterface.js",
 				"Utility/Game/Wardrobe.js",
