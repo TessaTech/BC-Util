@@ -32,18 +32,24 @@
             "all_frames": true,
 			"js": ["Utility/Event.js",
 				"Utility/FunctionCallHook.js",
+				"Utility/Utility.js",
 				
 				"Utility/Game/UiElements/Button.js",
+				"Utility/Game/UiElements/TextLabel.js",
 				"Utility/Game/UiElements/TextArea.js",
+				"Utility/Game/UiElements/TextField.js",
 				
 				"Utility/Game/Assets.js",
 				"Utility/Game/Characters.js",
 				"Utility/Game/UserInterface.js",
 				"Utility/Game/Wardrobe.js",
+				"Utility/Game/ScreenProperties.js",
 				
 				"Model/WardrobeUtilities/WardrobeUtilities.js",
+				"Model/AppearanceUtilities/AppearanceUtilities.js",
 				
 				"View/Gui/WardrobeUtilities.js",
+				"View/Gui/AppearanceUtilities.js",
 				
 				"Mod.js",
 				"Main.js"]

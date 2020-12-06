@@ -58,22 +58,22 @@ Utility.Game.UiElements.Button = class
 		
 		this.unused = false
 
-		this.clickEvent = new Utility.Event()
+		this.eventClicked = new Utility.Event()
 	}
 
-	RegisterClickEventHandler(eventHandler)
+	RegisterEventClicked(eventHandler)
 	{
-		return this.clickEvent.Register(eventHandler)
+		return this.eventClicked.Register(eventHandler)
 	}
 
-	UnregisterClickEventHandler(eventId)
+	UnregisterEventClicked(eventId)
 	{
-		return this.clickEvent.Unregister(eventId)
+		return this.eventClicked.Unregister(eventId)
 	}
 
-	RaiseClickEvent()
+	RaiseEventClicked()
 	{
-		this.clickEvent.Raise()
+		this.eventClicked.Raise()
 	}
 
 	Show()

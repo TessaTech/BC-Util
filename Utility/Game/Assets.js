@@ -21,6 +21,19 @@ Utility.Game.Assets = class
 		return Asset.find(x => ((x.Name == itemName) && (x.Group.Name == itemGroup)))
 	}
 
+	GetAssetGroupPriority(assetGroup)
+	{
+		let assetGroupObject = AssetFemale3DCG.find(x => x.Group == assetGroup)
+
+		if(assetGroupObject == null || assetGroupObject.Priority == null)
+		{
+			return 0
+		}
+		
+		return assetGroupObject.Priority
+
+	}
+
 	ItemIsOwnerOnly(item)
 	{
 		var lock = null

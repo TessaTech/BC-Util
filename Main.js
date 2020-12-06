@@ -37,19 +37,24 @@ function onLoad(event)
 	
 	AddScriptFile("Utility/Event.js")
 	AddScriptFile("Utility/FunctionCallHook.js")
-	//AddScriptFile("Utility/Utility.js")
+	AddScriptFile("Utility/Utility.js")
 	
 	AddScriptFile("Utility/Game/UiElements/Button.js")
+	AddScriptFile("Utility/Game/UiElements/TextLabel.js")
 	AddScriptFile("Utility/Game/UiElements/TextArea.js")
+	AddScriptFile("Utility/Game/UiElements/TextField.js")
 	
 	AddScriptFile("Utility/Game/Assets.js")
 	AddScriptFile("Utility/Game/Characters.js")
 	AddScriptFile("Utility/Game/UserInterface.js")
 	AddScriptFile("Utility/Game/Wardrobe.js")
+	AddScriptFile("Utility/Game/ScreenProperties.js")
 	
 	AddScriptFile("Model/WardrobeUtilities/WardrobeUtilities.js")
+	AddScriptFile("Model/AppearanceUtilities/AppearanceUtilities.js")
 	
 	AddScriptFile("View/Gui/WardrobeUtilities.js")
+	AddScriptFile("View/Gui/AppearanceUtilities.js")
 
 	AddScriptFile("Mod.js")
 	
@@ -68,6 +73,7 @@ function onLoad(event)
 		"	catch(ex)\n"+
 		"	{\n"+
 		"		console.log(\"BC-Util: Failed to start. Trying again...\");\n"+
+		"		console.log(ex)\n"+
 		"		if(mod != null)\n"+
 		"		{\n"+
 		"			mod = null;\n"+

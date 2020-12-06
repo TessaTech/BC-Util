@@ -16,8 +16,9 @@ Mod = class
 		this.LogLoadSection("Game Interface")
 		this.gameAssets = new Utility.Game.Assets()
 		this.gameCharacters = new Utility.Game.Characters(this.gameAssets)
-		this.gameUserInterface = new Utility.Game.UserInterface()
+		this.gameScreenProperties = new Utility.Game.ScreenProperties()
 		this.gameWardrobe = new Utility.Game.Wardrobe()
+		this.gameUserInterface = new Utility.Game.UserInterface(this.gameScreenProperties)
 
 		this.autoResponseEvents = {}
 
@@ -25,9 +26,13 @@ Mod = class
 		this.LogLoadSection("Wardrobe Utilities")
 		this.wardrobeUtilities = new WardrobeUtilities.WardrobeUtilities(this.gameWardrobe, this.gameCharacters, 48)
 
+		this.LogLoadSection("Appearance Utilities")
+		this.appearanceUtilities = new AppearanceUtilities.AppearanceUtilities(this.gameCharacters, this.gameScreenProperties)
+
 		//Gui
 		this.LogLoadSection("Graphical user Interfaces")
 		this.guiWardrobeUtilities = new Gui.WardrobeUtilities(this.gameUserInterface, this.wardrobeUtilities)
+		this.guiAppearanceUtilities = new Gui.AppearanceUtilities(this.gameUserInterface, this.gameScreenProperties, this.appearanceUtilities)
 
 		this.LogFinishedLoading()
 

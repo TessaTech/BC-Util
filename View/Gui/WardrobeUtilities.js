@@ -1,3 +1,5 @@
+"use strict";
+
 if(Gui == undefined)
 {
 	var Gui = class {}
@@ -27,29 +29,27 @@ Gui.WardrobeUtilities = class
 
 		//CreateTextArea(this.importExportBoxName)
 
-		this.activeScreens = ["Appearance"]
+		this.importExportScreens = ["Appearance"]
 		let _this = this
-		//this.drawEventId = this.drawEvent.RegisterEventAfter(function() { _this.OnDraw(); })
-		//this.clickEventId = this.clickEvent.RegisterEventAfter(function() { _this.OnClick(); })
 
 		this.buttonImport = this.gameUserInterface.AddButton(1070, 25, 90, 40,
 			"Import", "White", "#808080", "", "Import a previously exorted wardrobe",
-			this.activeScreens, true, true)
+			this.importExportScreens, true, true)
 		this.buttonExport = this.gameUserInterface.AddButton(1070, 75, 90, 40,
 			"Export", "White", "#808080", "", "Export then current wardrobe",
-			this.activeScreens, true, true)
-		this.textAreaImportExport = this.gameUserInterface.AddTextArea(100, 160, 1790, 750, 12, "", this.activeScreens, false)
+			this.importExportScreens, true, true)
+		this.textAreaImportExport = this.gameUserInterface.AddTextArea(100, 160, 1790, 750, 12, -1, "", this.importExportScreens, false)
 		this.buttonImportAccept = this.gameUserInterface.AddButton(200, 60, 90, 90,
 			"", "White", "#808080", "Icons/Accept.png", "Import",
-			this.activeScreens, false, true)
+			this.importExportScreens, false, true)
 		this.buttonImportExportCancel = this.gameUserInterface.AddButton(100, 60, 90, 90,
 			"", "White", "#808080", "Icons/Cancel.png", "Back",
-			this.activeScreens, false, true)
+			this.importExportScreens, false, true)
 
-		this.buttonImport.RegisterClickEventHandler(function(){ _this.OnButtonImportClick(); })
-		this.buttonExport.RegisterClickEventHandler(function(){ _this.OnButtonExportClick(); })
-		this.buttonImportAccept.RegisterClickEventHandler(function(){ _this.OnButtonImportAcceptClick(); })
-		this.buttonImportExportCancel.RegisterClickEventHandler(function(){ _this.OnButtonImportExportCancelClick(); })
+		this.buttonImport.RegisterEventClicked(function(){ _this.OnButtonImportClick(); })
+		this.buttonExport.RegisterEventClicked(function(){ _this.OnButtonExportClick(); })
+		this.buttonImportAccept.RegisterEventClicked(function(){ _this.OnButtonImportAcceptClick(); })
+		this.buttonImportExportCancel.RegisterEventClicked(function(){ _this.OnButtonImportExportCancelClick(); })
 
 	}
 

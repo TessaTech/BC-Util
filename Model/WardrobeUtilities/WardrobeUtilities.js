@@ -1,4 +1,4 @@
-"use strice";
+"use strict";
 
 if(WardrobeUtilities == undefined)
 {

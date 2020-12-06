@@ -1,10 +1,13 @@
 # Info
 This is a browser extension that adds additional convenience features for the browser game Bondage Club.
-The current version (0.0.2) contains the following features:
+The current version contains the following features:
 - Extended wardrobe
 	- Raises the number of available wardrobe slots from the default of 24 to 48
 	- Adds an Export button to the appearance menu which allows you to export your wardrobe as JSON string
 	- Adds an Import button to the appearance menu which allows you to import an previously exported wardrobe
+- Appearance Overriding
+	- Adds an additional field "Layer" to the top area qhen selecting an clothing piece in the appearance window 
+		- Changing this value allows overriding of the clothing piece's default display layer
 
 # Important
 **This extension is currently in beta stage. Please report any bugs you might find**
@@ -23,6 +26,6 @@ The current version (0.0.2) contains the following features:
 8. The addon is now installed. You might have to refresh the Bondage Club page if it's already open to load it with the addon
 
 # About
-_BC-Util Version 0.0.2 (Beta)_
+_BC-Util Version 1.0.0 (Beta)_
 
 _Created by Tessa (8863) /TessaTech@github_

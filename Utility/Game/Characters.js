@@ -16,7 +16,56 @@ Utility.Game.Characters = class
 
 	constructor(initAssets)
 	{
-		this.assets = initAssets
+		this.gameAssets = initAssets
+		this.defaultMaxDescriptionSize = 1000
+		
+		this.fullOnlineProfileBuffer = ""
+
+		this.functionCallHooks = {}
+		this.functionCallHooks.LoginResponse = new Utility.FunctionCallHook('LoginResponse')
+		this.functionCallHooks.OnlineProfileLoad = new Utility.FunctionCallHook('OnlineProfileLoad')
+		this.functionCallHooks.OnlineProfileExit = new Utility.FunctionCallHook('OnlineProfileExit')
+
+		this.eventDescriptionShown = new Utility.Event()
+		this.eventDescriptionChangeClicked = new Utility.Event()
+		this.eventLogin = new Utility.Event()
+
+		let _this = this
+		this.functionCallHooks.LoginResponse.RegisterEventAfter(function(characterData){ _this.OnHookLoginResponseAfter(characterData); })
+		this.functionCallHooks.LoginResponse.RegisterEventAfter(function(){ _this.OnHookOnlineProfileLoadAfter(); })
+		this.functionCallHooks.LoginResponse.RegisterEventBefore(function(save){ _this.OnHookOnlineProfileExitBefore(save); })
+		this.functionCallHooks.LoginResponse.RegisterEventAfter(function(save){ _this.OnHookOnlineProfileExitAfter(save); })
+
+	}
+
+	RegisterEventLogin(eventHandler)
+	{
+		return this.eventLogin.Add(eventHandler)
+	}
+
+	UnregisterEventAfterLogin(eventId)
+	{
+		eventLogin.Remove(eventId)
+	}
+
+	RegisterEventDescriptionShown(eventHandler)
+	{
+		return this.RegisterEventDescriptionShown.Add(eventHandler)
+	}
+
+	UnregisterEventDescriptionShown(eventId)
+	{
+		this.RegisterEventDescriptionShown.Remove(eventId)
+	}
+
+	RegisterEventDescriptionChangeClicked(eventHandler)
+	{
+		return this.eventDescriptionChangeClicked.Add(eventHandler)
+	}
+
+	UnregisterEventDescriptionChangeClicked(eventId)
+	{
+		this.eventDescriptionChangeClicked.Remove(eventId)
 	}
 
 	//EngineUtility
@@ -88,6 +137,93 @@ Utility.Game.Characters = class
 		// Draw the character canvas and calculate the effects on the character
 		if (refresh === true) { CharacterRefresh(player); }
 	
+	}
+
+	SetLayerPriority(player, assetGroup, priority, chatRoomUpdate)
+	{
+		if (player == null) { return false; }
+		if (assetGroup == null) { return false; }
+		if (priority == null) { return false; }
+		if(chatRoomUpdate == null) { chatRoomUpdate = false; }
+
+		let item = this.GetItem(player, assetGroup)
+		if(item == null) { return false; }
+
+		if (item.Property == null) 
+		{
+			item.Property = { }
+		}
+	 
+		item.Property.OverridePriority = priority
+		CharacterRefresh(player)
+		if(chatRoomUpdate == true)
+		{
+			ChatRoomCharacterUpdate(player)
+		}
+
+		return true;
+
+	}
+
+	SetLayerPrioritySelf(assetGroup, priority)
+	{
+		return this.SetLayerPriority(Player, assetGroup, priority)
+	}
+
+	SetLayerPriorityByMNr(memberNumber, assetGroup, priority)
+	{
+		var bufPlayer = null
+	
+		bufPlayer = this.GetCharacterByMNr(memberNumber)
+		return this.SetLayerPriority(bufPlayer, assetGroup, priority)
+	}
+
+	GetLayerPriority(player, assetGroup)
+	{
+		let retVar = 0
+
+		if (player == null) { return 0; }
+		if (assetGroup == null) { return 0; }
+
+		let item = this.GetItem(player, assetGroup)
+		if(item == null) { return 0; }
+
+		if (item.Property != null && item.Property.OverridePriority != null) 
+		{
+			retVar = item.Property.OverridePriority
+		}
+		else
+		{
+			let item = this.GetItem(player, assetGroup)
+			if(item == null)
+			{
+				retVar = 0
+			}
+			if(item.Asset != null && item.Asset.DrawingPriority != null)
+			{
+				retVar = item.Asset.DrawingPriority
+			}
+			else
+			{
+				retVar = this.gameAssets.GetAssetGroupPriority(assetGroup)
+			}
+		}
+
+		return retVar
+
+	}
+
+	GetLayerPrioritySelf(assetGroup)
+	{
+		return this.GetLayerPriority(Player, assetGroup)
+	}
+
+	GetLayerPriorityByMNr(memberNumber, assetGroup)
+	{
+		var bufPlayer = null
+	
+		bufPlayer = this.GetCharacterByMNr(memberNumber)
+		return this.GetLayerPriority(bufPlayer, assetGroup)
 	}
 
 	//Tie
@@ -177,7 +313,7 @@ Utility.Game.Characters = class
 			}
 		}
 	
-		itemAsset = assets.GetAsset(item, itemGroup)
+		itemAsset = this.gameAssets.GetAsset(item, itemGroup)
 		if(itemAsset == null)
 		{
 			return false
@@ -252,11 +388,6 @@ Utility.Game.Characters = class
 	GetItemSelf(itemGroup)
 	{
 		return InventoryGet(Character[0], itemGroup)
-	}
-	
-	GetItem(player, itemGroup)
-	{
-		return InventoryGet(player, itemGroup)
 	}
 	
 	GetItemByMNr(memberNumber, itemGroup)
@@ -775,6 +906,110 @@ Utility.Game.Characters = class
 			}
 		}
 		ServerSend("ChatRoomCharacterItemUpdate", updateData)
+	}
+
+	SetDescription(newDescription)
+	{
+		if(Player.Description != null)
+		{
+			Player.Description = newDescription
+		}
+		if(InformationSheetSelection != null && InformationSheetSelection.Description != null)
+		{
+			InformationSheetSelection.Description = newDescription
+		}
+		ServerSend("AccountUpdate", { Description: newDescription });
+        ChatRoomCharacterUpdate(Player);
+	}
+
+	//EventHandlers
+	OnHookLoginResponseAfter(characterData)
+	{
+		let attributes = {}
+
+		attributes.description = characterData.Description
+
+		this.eventLogin.Raise(attributes)
+
+	}
+
+	OnHookOnlineProfileLoadAfter()
+	{
+		let attributes = {}
+		let descriptionInput = document.getElementById("DescriptionInput");
+		let infoSheetSelection = {}
+
+		if(InformationSheetSelection != null)
+		{
+			infoSheetSelection = InformationSheetSelection
+		}
+
+		if(infoSheetSelection.ID == null)
+		{ attributes.characterId = 0; }
+		else
+		{ attributes.characterId = infoSheetSelection.ID;}
+
+		attributes.maxLength = this.defaultMaxDescriptionSize
+
+		if(infoSheetSelection.Description == null)
+		{ attributes.description = ""; }
+		else
+		{ attributes.description = infoSheetSelection.Description; }
+		
+		this.eventDescriptionShown.Raise(attributes)
+
+		if(descriptionInput != null)
+		{
+			descriptionInput.setAttribute("maxlength", attributes.maxLength);
+			descriptionInput.value = attributes.description
+		}
+
+	}
+
+	OnHookOnlineProfileExitBefore(save)
+	{
+		this.fullOnlineProfileBuffer = ElementValue("DescriptionInput")
+		if(this.fullOnlineProfileBuffer == null)
+		{
+			this.fullOnlineProfileBuffer = ""
+		}
+	}
+
+	OnHookOnlineProfileExitAfter(save)
+	{
+		let attributes = {}
+		let infoSheetSelection = {}
+
+		if(save == false)
+		{
+			return;
+		}
+
+		if(InformationSheetSelection != null)
+		{
+			infoSheetSelection = InformationSheetSelection
+		}
+
+		if(infoSheetSelection.ID == null)
+		{ attributes.characterId = 0; }
+		else
+		{ attributes.characterId = infoSheetSelection.ID;}
+
+		attributes.maxLength = this.defaultMaxDescriptionSize
+		attributes.fullDescription = this.fullOnlineProfileBuffer
+
+		if(infoSheetSelection.Description == null)
+		{ attributes.description = ""; }
+		else
+		{ attributes.description = infoSheetSelection.Description; }
+
+		this.eventDescriptionChangeClicked.Raise(attributes)
+
+		if(infoSheetSelection.Description != null && attributes.description != infoSheetSelection.Description)
+		{
+			this.SetDescription(attributes.description)
+		}
+
 	}
 
 }

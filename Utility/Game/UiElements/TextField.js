@@ -13,30 +13,17 @@ if(Utility.Game.UiElements == undefined)
 	Utility.Game.UiElements = {}
 }
 
-Utility.Game.UiElements.TextArea = class
+//ElementCreateInput
+Utility.Game.UiElements.TextField = class
 {
-	// gameTextAreaId = ""
-	// gameTextAreaExists = false
-
-	// x = 0
-	// y = 0
-	// width = 0
-	// height = 0
-	// fontSize = 0
-	// text = ""
-
-	// screens = []
-	// visible = true
-	// unused = false
-
-	constructor(initGameTextAreaId, initX, initY, initWidth, initHeight, initFontSize, initMaxLength, initText, initScreens, initVisible)
+	constructor(initGameTextInputId, initX, initY, initWidth, initHeight, initFontSize, initMaxLength, initText, initScreens, initVisible)
 	{
 		if(initText == null) { initText = ""; }
 		if(initScreens == null) { initScreens = []; }
 		if(initVisible == null) { initVisible = true; }
 
-		this.gameTextAreaId = initGameTextAreaId
-		this.gameTextAreaExists = false
+		this.gameTextInputId = initGameTextInputId
+		this.gameTextInputExists = false
 
 		this.x = initX
 		this.y = initY
@@ -51,13 +38,12 @@ Utility.Game.UiElements.TextArea = class
 		this.unused = false
 		
 		this.eventTextChanged = new Utility.Event()
-		this.lastText = this.text
-
+		
 	}
 
 	GetText()
 	{
-		let value = ElementValue(this.gameTextAreaId)
+		let value = ElementValue(this.gameTextInputId)
 		if(value != null)
 		{
 			this.text = value
@@ -73,7 +59,7 @@ Utility.Game.UiElements.TextArea = class
 
 	UpdateText()
 	{
-		ElementValue(this.gameTextAreaId, this.text)
+		ElementValue(this.gameTextInputId, this.text)
 	}
 
 	RegisterEventTextChanged(eventHandler)
@@ -93,11 +79,11 @@ Utility.Game.UiElements.TextArea = class
 
 	RaiseEventTextChangedIfTextChanged()
 	{
-		let bufText = this.GetText()
-		if(bufText != this.lastText)
+		let text = this.GetText()
+		if(text != this.lastText)
 		{
-			this.lastText = bufText
-			this.RaiseEventTextChanged(bufText)
+			this.lastText = text
+			this.RaiseEventTextChanged(text)
 		}
 	}
 
