@@ -30,7 +30,6 @@ AppearanceUtilities.AppearanceUtilities = class
 
 		let retVar = this.gameCharacters.GetLayerPriority(player, assetGroup)
 
-		console.log("Player["+player.MemberNumber+"].AssetSlot["+assetGroup+"].Priority="+retVar)
 		return retVar
 
 	}
