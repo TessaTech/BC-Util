@@ -40,11 +40,13 @@ function onLoad(event)
 	AddScriptFile("Utility/Utility.js")
 	
 	AddScriptFile("Utility/Game/UiElements/Button.js")
+	AddScriptFile("Utility/Game/UiElements/DropDown.js")
 	AddScriptFile("Utility/Game/UiElements/TextLabel.js")
 	AddScriptFile("Utility/Game/UiElements/TextArea.js")
 	AddScriptFile("Utility/Game/UiElements/TextField.js")
 	
 	AddScriptFile("Utility/Game/Assets.js")
+	AddScriptFile("Utility/Game/Beeps.js")
 	AddScriptFile("Utility/Game/Characters.js")
 	AddScriptFile("Utility/Game/UserInterface.js")
 	AddScriptFile("Utility/Game/Wardrobe.js")
@@ -52,9 +54,13 @@ function onLoad(event)
 	
 	AddScriptFile("Model/WardrobeUtilities/WardrobeUtilities.js")
 	AddScriptFile("Model/AppearanceUtilities/AppearanceUtilities.js")
+	AddScriptFile("Model/BeepMessages/BeepCommunicator.js")
+	AddScriptFile("Model/BeepMessages/BeepConversation.js")
+	AddScriptFile("Model/BeepMessages/BeepMessenger.js")
 	
 	AddScriptFile("View/Gui/WardrobeUtilities.js")
 	AddScriptFile("View/Gui/AppearanceUtilities.js")
+	AddScriptFile("View/Gui/DirectChat.js")
 
 	AddScriptFile("Mod.js")
 	

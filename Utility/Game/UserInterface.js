@@ -27,6 +27,8 @@ Utility.Game.UserInterface = class
 		this.deletedTextAreaIds = []
 		this.textFields = []
 		this.deletedTextFieldIds = []
+		this.dropDowns = []
+		this.deletedDropDownIds = []
 
 		this.functionCallHooks.DrawProcess = new Utility.FunctionCallHook('DrawProcess')
 		this.functionCallHooks.CommonClick = new Utility.FunctionCallHook('CommonClick')
@@ -34,9 +36,34 @@ Utility.Game.UserInterface = class
 
 		let _this = this
 		this.functionCallHooks.DrawProcess.RegisterEventAfter(function(){ _this.OnDrawProcess(); })
-		this.functionCallHooks.CommonClick.RegisterEventAfter(function(){ _this.OnClick(); })
-		this.functionCallHooks.CommonKeyDown.RegisterEventAfter(function(){ _this.OnKeyDown(); })
+		this.functionCallHooks.CommonClick.RegisterEventBefore(function(){ _this.OnClick(); })
+		this.functionCallHooks.CommonKeyDown.RegisterEventBefore(function(){ _this.OnKeyDown(); })
 
+	}
+
+	BlockGameClick()
+	{
+		this.functionCallHooks.CommonClick.BlockHookedFunction()
+	}
+
+	BlockNextGameClick()
+	{
+		this.functionCallHooks.CommonClick.BlockHookedFunctionOnce()
+	}
+
+	AllowGameClick()
+	{
+		this.functionCallHooks.CommonClick.AllowHookedFunction()
+	}
+
+	BlockGameKeyDown()
+	{
+		this.functionCallHooks.CommonKeyDown.BlockHookedFunction()
+	}
+
+	AllowGameKeyDown()
+	{
+		this.functionCallHooks.CommonKeyDown.AllowHookedFunction()
 	}
 
 	AddButton(x, y, width, height, text, activeColor, inactiveColor, image, tooltip, activeScreens, visible, enabled)
@@ -97,6 +124,25 @@ Utility.Game.UserInterface = class
 		return newTextField
 	}
 
+	AddDropDown(x, y, width, height, fontSize, objects, selectedIndex, screens, visible)
+	{
+		let newGameDropDownId = "Utility.Game.UserInterface.DropDown_"
+		
+		if(this.deletedDropDownIds.length > 0)
+		{
+			newGameDropDownId = this.deletedDropDownIds.pop()
+		}
+		else
+		{
+			newGameDropDownId = "Utility.Game.UserInterface.DropDown_" + this.textFields.length.toString()
+		}
+
+		let newDropDown = new Utility.Game.UiElements.DropDown(newGameDropDownId, x, y, width, height, fontSize, objects, selectedIndex, screens, visible)
+		this.dropDowns.push(newDropDown)
+
+		return newDropDown
+	}
+
 	//Internal
 	GetMousePosition()
 	{
@@ -110,120 +156,12 @@ Utility.Game.UserInterface = class
 		mousePos = this.GetMousePosition()
 		return (mousePos.x >= x) && (mousePos.x <= x + width) && (mousePos.y >= y) && (mousePos.y <= y + height);
 	}
-	
-	IsElementOnScreen(element)
-	{
-		let currentScreen = this.gameScreenProperties.GetCurrentScreen()
-		if(currentScreen == null)
-		{
-			return false
-		}
-
-		return (element.screens.length == 0 || element.screens.includes(currentScreen) == true)
-	}
-
-	//Methods to Draw specific GUI Elements
-	DrawButton(button)
-	{
-		if(button.visible == false || this.IsElementOnScreen(button) == false) // If button isn't visible or the current screen is not it's active screen...
-		{
-			//Don't draw it
-			return;
-		}
-
-		if(button.enabled == true) // If button is enabled...
-		{
-			//Draw enabled button
-			DrawButton(button.x, button.y, button.width, button.height, button.text, button.colorActive, button.image, button.tooltip)
-		}
-		else // If button is disabled...
-		{
-			//Draw disabled button
-			DrawButton(button.x, button.y, button.width, button.height, button.text, button.colorInactive, button.image, button.tooltip)
-		}
-
-	}
-
-	DrawTextLabel(textLabel)
-	{
-		if(textLabel.visible == false || this.IsElementOnScreen(textLabel) == false) // If text label isn't visible or the current screen is not it's active screen...
-		{
-			//Don't draw it
-			return;
-		}
-
-		switch(textLabel.mode)
-		{
-			case "Wrap": //If the text label's mode is "Wrap"...
-				DrawTextWrap(textLabel.text, textLabel.x+(textLabel.width/2), textLabel.y+(textLabel.height/2), textLabel.width, textLabel.height, textLabel.colorForeground, textLabel.colorBackground, null)
-				break;
-
-			case "Fit": //If the text label's mode is "Fit"...
-				DrawTextFit(textLabel.text, textLabel.x+(textLabel.width/2), textLabel.y+(textLabel.height/2), textLabel.width, textLabel.colorForeground)
-				break;
-
-			case "Default": //If the text label's mode is "Default"...
-			default: // Every unknown mode is regarded as "Default"
-				DrawText(textLabel.text, textLabel.x+(textLabel.width/2), textLabel.y+(textLabel.height/2), textLabel.colorForeground, textLabel.colorBackground)
-				break;
-				
-		}
-
-	}
-
-	DrawTextArea(textArea)
-	{
-		if(textArea.visible == false || this.IsElementOnScreen(textArea) == false) // If text area isn't visible or the current screen is not it's active screen...
-		{
-			if(textArea.gameTextAreaExists == true) // If the underlying element extist...
-			{
-				//Remove it
-				ElementRemove(textArea.gameTextAreaId)
-				textArea.gameTextAreaExists = false
-			}
-			//Don't draw it
-			return;
-		}
-
-		if(textArea.gameTextAreaExists == false)
-		{
-			ElementCreateTextArea(textArea.gameTextAreaId)
-			textArea.UpdateText()
-			textArea.gameTextAreaExists = true
-		}
-		ElementPositionFix(textArea.gameTextAreaId, textArea.fontSize, textArea.x, textArea.y, textArea.width, textArea.height)
-		textArea.RaiseEventTextChangedIfTextChanged()
-
-	}
-
-	DrawTextField(textField)
-	{
-		if(textField.visible == false || this.IsElementOnScreen(textField) == false) // If text area isn't visible or the current screen is not it's active screen...
-		{
-			if(textField.gameTextInputExists == true) // If the underlying element extist...
-			{
-				//Remove it
-				ElementRemove(textField.gameTextInputId)
-				textField.gameTextInputExists = false
-			}
-			//Don't draw it
-			return;
-		}
-
-		if(textField.gameTextInputExists == false) // If the underlying element does not extis...
-		{
-			ElementCreateInput(textField.gameTextInputId, "text", textField.GetText(), textField.maxLength)
-			textField.UpdateText()
-			textField.gameTextInputExists = true
-		}
-		ElementPositionFix(textField.gameTextInputId, textField.fontSize, textField.x, textField.y, textField.width, textField.height)
-		textField.RaiseEventTextChangedIfTextChanged()
-
-	}
 
 	//Event Handlers
 	OnDrawProcess()
 	{
+		let currentScreen = this.gameScreenProperties.GetCurrentScreen()
+		
 		//Buttons
 		for(let i=0; i<this.buttons.length; i++) // For each button...
 		{
@@ -235,7 +173,7 @@ Utility.Game.UserInterface = class
 				i = i - 1;
 				continue;
 			}
-			this.DrawButton(button)
+			button.Draw(currentScreen)
 		}
 
 		//Text Labels
@@ -249,7 +187,7 @@ Utility.Game.UserInterface = class
 				i = i - 1;
 				continue;
 			}
-			this.DrawTextLabel(textLabel)
+			textLabel.Draw(currentScreen)
 		}
 
 		//Text Areas
@@ -266,7 +204,7 @@ Utility.Game.UserInterface = class
 				i = i - 1;
 				continue;
 			}
-			this.DrawTextArea(textArea)
+			textArea.Draw(currentScreen)
 		}
 
 		//Text Fields
@@ -283,16 +221,34 @@ Utility.Game.UserInterface = class
 				i = i - 1;
 				continue;
 			}
-			this.DrawTextField(textField)
+			textField.Draw(currentScreen)
+		}
+
+		//Drop Downs
+		for(let i=0; i<this.dropDowns.length; i++) // For each text area...
+		{
+			let dropDown = this.dropDowns[i]
+			if(dropDown.unused == true) // If button is marked as unused...
+			{
+				//Remove it from handling
+				dropDown.exists = false
+				this.deletedDropDownIds.push(dropDown.gameDropDownId)
+				ElementRemove(dropDown.gameDropDownId)
+				this.dropDowns.splice(i, 1)
+				i = i - 1;
+				continue;
+			}
+			dropDown.Draw(currentScreen)
 		}
 	}
 
 	OnClick()
 	{
+		let currentScreen = this.gameScreenProperties.GetCurrentScreen()
 		for(let i=0; i<this.buttons.length; i++) // For each button...
 		{
 			let button = this.buttons[i]
-			if(button.visible == true && button.enabled == true && this.IsElementOnScreen(button) == true) // If button is visible, enabled and the current screen is it's active screen...
+			if(button.visible == true && button.enabled == true && button.IsElementOnScreen(currentScreen) == true) // If button is visible, enabled and the current screen is it's active screen...
 			{
 				if(this.IsMouseInSquare(button.x, button.y, button.width, button.height)) // If mouse cursor is within the button's boundaries during the click...
 				{

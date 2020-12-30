@@ -35,11 +35,13 @@
 				"Utility/Utility.js",
 				
 				"Utility/Game/UiElements/Button.js",
+				"Utility/Game/UiElements/DropDown.js",
 				"Utility/Game/UiElements/TextLabel.js",
 				"Utility/Game/UiElements/TextArea.js",
 				"Utility/Game/UiElements/TextField.js",
 				
 				"Utility/Game/Assets.js",
+				"Utility/Game/Beeps.js",
 				"Utility/Game/Characters.js",
 				"Utility/Game/UserInterface.js",
 				"Utility/Game/Wardrobe.js",
@@ -47,9 +49,13 @@
 				
 				"Model/WardrobeUtilities/WardrobeUtilities.js",
 				"Model/AppearanceUtilities/AppearanceUtilities.js",
+				"Model/BeepMessages/BeepCommunicator.js",
+				"Model/BeepMessages/BeepConversation.js",
+				"Model/BeepMessages/BeepMessenger.js",
 				
 				"View/Gui/WardrobeUtilities.js",
 				"View/Gui/AppearanceUtilities.js",
+				"View/Gui/DirectChat.js",
 				
 				"Mod.js",
 				"Main.js"]
