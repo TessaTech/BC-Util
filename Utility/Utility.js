@@ -95,7 +95,10 @@ Number.prototype.zeroPadding = function(size)
 	var s = ""
 	
 	s = String(this);
-	while (s.length < (size || 2)) {s = "0" + s;}
+	while (s.length < (size || 2))
+	{
+		s = "0" + s;
+	}
 	
 	return s;
 }
