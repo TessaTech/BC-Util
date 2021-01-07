@@ -17,55 +17,28 @@ Utility.Game.Characters = class
 	constructor(initAssets)
 	{
 		this.gameAssets = initAssets
-		this.defaultMaxDescriptionSize = 1000
 		
-		this.fullOnlineProfileBuffer = ""
+		this.loginAttributes = { }
 
 		this.functionCallHooks = {}
 		this.functionCallHooks.LoginResponse = new Utility.FunctionCallHook('LoginResponse')
-		this.functionCallHooks.OnlineProfileLoad = new Utility.FunctionCallHook('OnlineProfileLoad')
-		this.functionCallHooks.OnlineProfileExit = new Utility.FunctionCallHook('OnlineProfileExit')
 
-		this.eventDescriptionShown = new Utility.Event()
-		this.eventDescriptionChangeClicked = new Utility.Event()
 		this.eventLogin = new Utility.Event()
 
 		let _this = this
+		this.functionCallHooks.LoginResponse.RegisterEventBefore(function(characterData){ _this.OnHookLoginResponseBefore(characterData); })
 		this.functionCallHooks.LoginResponse.RegisterEventAfter(function(characterData){ _this.OnHookLoginResponseAfter(characterData); })
-		this.functionCallHooks.LoginResponse.RegisterEventAfter(function(){ _this.OnHookOnlineProfileLoadAfter(); })
-		this.functionCallHooks.LoginResponse.RegisterEventBefore(function(save){ _this.OnHookOnlineProfileExitBefore(save); })
-		this.functionCallHooks.LoginResponse.RegisterEventAfter(function(save){ _this.OnHookOnlineProfileExitAfter(save); })
 
 	}
 
 	RegisterEventLogin(eventHandler)
 	{
-		return this.eventLogin.Add(eventHandler)
+		return this.eventLogin.Register(eventHandler)
 	}
 
 	UnregisterEventAfterLogin(eventId)
 	{
-		eventLogin.Remove(eventId)
-	}
-
-	RegisterEventDescriptionShown(eventHandler)
-	{
-		return this.RegisterEventDescriptionShown.Add(eventHandler)
-	}
-
-	UnregisterEventDescriptionShown(eventId)
-	{
-		this.RegisterEventDescriptionShown.Remove(eventId)
-	}
-
-	RegisterEventDescriptionChangeClicked(eventHandler)
-	{
-		return this.eventDescriptionChangeClicked.Add(eventHandler)
-	}
-
-	UnregisterEventDescriptionChangeClicked(eventId)
-	{
-		this.eventDescriptionChangeClicked.Remove(eventId)
+		this.eventLogin.Unregister(eventId)
 	}
 
 	//EngineUtility
@@ -923,92 +896,37 @@ Utility.Game.Characters = class
 	}
 
 	//EventHandlers
-	OnHookLoginResponseAfter(characterData)
+	OnHookLoginResponseBefore(characterData)
 	{
-		let attributes = {}
-
-		attributes.description = characterData.Description
-
-		this.eventLogin.Raise(attributes)
-
-	}
-
-	OnHookOnlineProfileLoadAfter()
-	{
-		let attributes = {}
-		let descriptionInput = document.getElementById("DescriptionInput");
-		let infoSheetSelection = {}
-
-		if(InformationSheetSelection != null)
+		if (typeof characterData != "object") // If the response does not contains valid character data...
 		{
-			infoSheetSelection = InformationSheetSelection
+			//It's a negative response: Login failed
+			return;
 		}
-
-		if(infoSheetSelection.ID == null)
-		{ attributes.characterId = 0; }
-		else
-		{ attributes.characterId = infoSheetSelection.ID;}
-
-		attributes.maxLength = this.defaultMaxDescriptionSize
-
-		if(infoSheetSelection.Description == null)
-		{ attributes.description = ""; }
-		else
-		{ attributes.description = infoSheetSelection.Description; }
-		
-		this.eventDescriptionShown.Raise(attributes)
-
-		if(descriptionInput != null)
+		if (RelogData != null) //If relog data is not null
 		{
-			descriptionInput.setAttribute("maxlength", attributes.maxLength);
-			descriptionInput.value = attributes.description
-		}
-
-	}
-
-	OnHookOnlineProfileExitBefore(save)
-	{
-		this.fullOnlineProfileBuffer = ElementValue("DescriptionInput")
-		if(this.fullOnlineProfileBuffer == null)
-		{
-			this.fullOnlineProfileBuffer = ""
-		}
-	}
-
-	OnHookOnlineProfileExitAfter(save)
-	{
-		let attributes = {}
-		let infoSheetSelection = {}
-
-		if(save == false)
-		{
+			//We're just relogging: No login
 			return;
 		}
 
-		if(InformationSheetSelection != null)
+		this.loginAttributes.description = characterData.Description
+
+	}
+	
+	OnHookLoginResponseAfter(characterData)
+	{
+		if (typeof characterData != "object") // If the response does not contains valid character data...
 		{
-			infoSheetSelection = InformationSheetSelection
+			//It's a negative response: Login failed
+			return;
+		}
+		if (RelogData != null) //If relog data is not null
+		{
+			//We're just relogging: No login
+			return;
 		}
 
-		if(infoSheetSelection.ID == null)
-		{ attributes.characterId = 0; }
-		else
-		{ attributes.characterId = infoSheetSelection.ID;}
-
-		attributes.maxLength = this.defaultMaxDescriptionSize
-		attributes.fullDescription = this.fullOnlineProfileBuffer
-
-		if(infoSheetSelection.Description == null)
-		{ attributes.description = ""; }
-		else
-		{ attributes.description = infoSheetSelection.Description; }
-
-		this.eventDescriptionChangeClicked.Raise(attributes)
-
-		if(infoSheetSelection.Description != null && attributes.description != infoSheetSelection.Description)
-		{
-			this.SetDescription(attributes.description)
-		}
+		this.eventLogin.Raise(this.loginAttributes)
 
 	}
 
