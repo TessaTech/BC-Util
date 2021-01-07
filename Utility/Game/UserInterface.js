@@ -104,6 +104,25 @@ Utility.Game.UserInterface = class
 		return newTextArea
 	}
 
+	AddHtmlTextArea(x, y, width, height, fontSize, maxLength, text, screens, visible)
+	{
+		let newGameTextAreaId = "Utility.Game.UserInterface.TextArea_"
+
+		if(this.deletedTextAreaIds.length > 0)
+		{
+			newGameTextAreaId = this.deletedTextAreaIds.pop()
+		}
+		else
+		{
+			newGameTextAreaId = "Utility.Game.UserInterface.TextArea_" + this.textAreas.length.toString()
+		}
+
+		let newTextArea = new Utility.Game.UiElements.HtmlTextArea(newGameTextAreaId, x, y, width, height, fontSize, maxLength, text, screens, visible)
+		this.textAreas.push(newTextArea)
+
+		return newTextArea
+	}
+
 	AddTextField(x, y, width, height, fontSize, maxLength, text, screens, visible)
 	{
 		let newGameTextFieldId = "Utility.Game.UserInterface.TextField_"

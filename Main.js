@@ -43,6 +43,7 @@ function onLoad(event)
 	AddScriptFile("Utility/Game/UiElements/DropDown.js")
 	AddScriptFile("Utility/Game/UiElements/TextLabel.js")
 	AddScriptFile("Utility/Game/UiElements/TextArea.js")
+	AddScriptFile("Utility/Game/UiElements/HtmlTextArea.js")
 	AddScriptFile("Utility/Game/UiElements/TextField.js")
 	
 	AddScriptFile("Utility/Game/Assets.js")
