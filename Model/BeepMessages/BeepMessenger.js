@@ -19,7 +19,7 @@ BeepMessages.BeepMessenger = class
 		this.eventReceivedMessage = new Utility.Event()
 
 		let _this = this
-		this.beepCommunicator.RegisterEventReceivedMessage(function(memberNumber, memberName, version, message){ _this.OnBeepCommunicatorReceivedMessage(memberNumber, memberName, version, message); })
+		this.beepCommunicator.RegisterEventReceivedMessage(function(memberNumber, memberName, version, message, messageColor){ _this.OnBeepCommunicatorReceivedMessage(memberNumber, memberName, version, message, messageColor); })
 		this.beepCommunicator.RegisterEventReceivedVersion(function(memberNumber, memberName, version){ _this.OnBeepCommunicatorReceivedVersion(memberNumber, memberName, version); })
 		
 	}
@@ -90,7 +90,7 @@ BeepMessages.BeepMessenger = class
 		if(conversation.version == -2)
 		{
 			this.beepCommunicator.SendVersionRequest(conversation.memberNumber)
-			this.version = -1
+			conversation.version = -1
 		}
 	}
 
@@ -98,7 +98,7 @@ BeepMessages.BeepMessenger = class
 	{
 		let conversation = this.GetConversation(memberNumber)
 
-		if(conversation.connected == true)
+		if(conversation.version >= -1)
 		{
 			conversation.version = -2
 		}
@@ -119,24 +119,24 @@ BeepMessages.BeepMessenger = class
 		{
 			return false
 		}
-		this.beepCommunicator.SendMessage(conversation.memberNumber, conversation.version, message)
-		let memberName = this.gameCharacters.GetPlayer().Name
+		let player = this.gameCharacters.GetPlayer()
+		this.beepCommunicator.SendMessage(conversation.memberNumber, conversation.version, message, player.LabelColor)
 		let dateNow = new Date(Date.now())
-		conversation.messageHistory.push(new BeepMessages.BeepConversation.Message(memberName, message, dateNow))
-		this.eventReceivedMessage.Raise(memberNumber, memberName, message, dateNow)
+		conversation.messageHistory.push(new BeepMessages.BeepConversation.Message(player.MemberNumber, player.Name, message, player.LabelColor, dateNow))
+		this.eventReceivedMessage.Raise(player.MemberNumber, player.Name, message, player.LabelColor, dateNow)
 
 		return true
 
 	}
 
-	OnBeepCommunicatorReceivedMessage(memberNumber, memberName, version, message)
+	OnBeepCommunicatorReceivedMessage(memberNumber, memberName, version, message, messageColor)
 	{
 		let conversation = this.GetConversation(memberNumber)
 
 		conversation.version = version
 		let dateNow = new Date(Date.now())
-		conversation.messageHistory.push(new BeepMessages.BeepConversation.Message(memberName, message, dateNow))
-		this.eventReceivedMessage.Raise(memberNumber, memberName, message, dateNow)
+		conversation.messageHistory.push(new BeepMessages.BeepConversation.Message(memberNumber, memberName, message, messageColor, dateNow))
+		this.eventReceivedMessage.Raise(memberNumber, memberName, message, messageColor, dateNow)
 	}
 
 	OnBeepCommunicatorReceivedVersion(memberNumber, memberName, version)
