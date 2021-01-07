@@ -39,6 +39,43 @@ Utility.Game.UiElements.TextLabel = class
 		this.unused = false
 
 	}
+	
+	IsElementOnScreen(currentScreen)
+	{
+		if(currentScreen == null)
+		{
+			return false
+		}
+
+		return (this.screens.length == 0 || this.screens.includes(currentScreen) == true)
+	}
+
+	Draw(currentScreen)
+	{
+		if(this.visible == false || this.IsElementOnScreen(currentScreen) == false) // If text label isn't visible or the current screen is not it's active screen...
+		{
+			//Don't draw it
+			return;
+		}
+
+		switch(this.mode)
+		{
+			case "Wrap": //If the text label's mode is "Wrap"...
+				DrawTextWrap(this.text, this.x+(this.width/2), this.y+(this.height/2), this.width, this.height, this.colorForeground, this.colorBackground, null)
+				break;
+
+			case "Fit": //If the text label's mode is "Fit"...
+				DrawTextFit(this.text, this.x+(this.width/2), this.y+(this.height/2), this.width, this.colorForeground)
+				break;
+
+			case "Default": //If the text label's mode is "Default"...
+			default: // Every unknown mode is regarded as "Default"
+				DrawText(this.text, this.x+(this.width/2), this.y+(this.height/2), this.colorForeground, this.colorBackground)
+				break;
+				
+		}
+
+	}
 
 	Show()
 	{

@@ -40,6 +40,8 @@ Utility.Game.UiElements.DropDown = class
 		this.SetObjects(initObjects)
 		this.SetSelection(initSelectedObjectId)
 
+		this.updateOnDraw = false
+
 		this.eventTextChanged = new Utility.Event()
 		
 	}
@@ -58,7 +60,7 @@ Utility.Game.UiElements.DropDown = class
 	{
 		if(this.visible == false || this.IsElementOnScreen(currentScreen) == false) // If text area isn't visible or the current screen is not it's active screen...
 		{
-			if(this.gameDropDownExists == true) // If the underlying element extist...
+			if(this.gameDropDownExists == true) // If the underlying element exists...
 			{
 				//Remove it
 				ElementRemove(this.gameDropDownId)
@@ -75,6 +77,11 @@ Utility.Game.UiElements.DropDown = class
 			this.gameDropDownExists = true
 		}
 		ElementPositionFix(this.gameDropDownId, this.fontSize, this.x, this.y, this.width, this.height)
+		if(this.updateOnDraw == true)
+		{
+			this.UpdateObjects()
+			this.updateOnDraw = false
+		}
 	}
 
 	GetObjects()
@@ -102,6 +109,8 @@ Utility.Game.UiElements.DropDown = class
 
 	SetObjects(newObjects)
 	{
+		// console.log("SetObjects(...)")
+		// console.log(newObjects)
 		if(Array.isArray(newObjects) == false)
 		{
 			return;
@@ -112,6 +121,7 @@ Utility.Game.UiElements.DropDown = class
 
 	SetSelection(selectedObjectId)
 	{
+		// console.log("SetSelection("+selectedObjectId+")")
 		this.selection = selectedObjectId
 		this.UpdateObjects()
 
@@ -119,9 +129,11 @@ Utility.Game.UiElements.DropDown = class
 
 	UpdateObjects()
 	{
+		// console.log("visible="+this.visible+" gameDropDownExists="+this.gameDropDownExists)
 		if(this.visible == true && this.gameDropDownExists == true)
 		{
 			let _this = this
+			
 			ElementRemove(this.gameDropDownId)
 			ElementCreateDropdown(this.gameDropDownId, this.objects, function(eventData){ _this.OnElementClicked(eventData); })
 			ElementPositionFix(this.gameDropDownId, this.fontSize, this.x, this.y, this.width, this.height)
@@ -141,6 +153,7 @@ Utility.Game.UiElements.DropDown = class
 			}
 			elementSelect.selectedIndex = this.selection
 			elementSelection.innerHTML = elementSelect.options[this.selection].innerHTML
+			// console.log("elementSelect.selectedIndex="+elementSelect.selectedIndex+" elementSelection.innerHTML="+elementSelection.innerHTML)
 			
 		}
 	}
@@ -163,6 +176,7 @@ Utility.Game.UiElements.DropDown = class
 	Show()
 	{
 		this.visible = true
+		this.updateOnDraw = true
 	}
 
 	Hide()

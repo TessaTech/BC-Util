@@ -37,16 +37,70 @@ Utility.Game.UiElements.TextField = class
 		this.visible = initVisible
 		this.unused = false
 		
+		this.keyDown = false
 		this.eventTextChanged = new Utility.Event()
+		this.eventAccepted = new Utility.Event()
 		
+	}
+	
+	IsElementOnScreen(currentScreen)
+	{
+		if(currentScreen == null)
+		{
+			return false
+		}
+
+		return (this.screens.length == 0 || this.screens.includes(currentScreen) == true)
+	}
+
+	Draw(currentScreen)
+	{
+		if(this.visible == false || this.IsElementOnScreen(currentScreen) == false) // If text area isn't visible or the current screen is not it's active screen...
+		{
+			if(this.gameTextInputExists == true) // If the underlying element exists...
+			{
+				//Remove it
+				ElementRemove(this.gameTextInputId)
+				this.gameTextInputExists = false
+			}
+			//Don't draw it
+			return;
+		}
+
+		if(this.gameTextInputExists == false) // If the underlying element does not extis...
+		{
+			ElementCreateInput(this.gameTextInputId, "text", this.GetText(), this.maxLength)
+			this.UpdateText()
+			this.gameTextInputExists = true
+
+			let element = document.getElementById(this.gameTextInputId)
+			element.addEventListener("keydown", function(eventData)
+				{
+					if(_this.keyDown == true) { return; }
+					_this.keyDown = true
+	
+					_this.OnElementKeyDown(eventData.key)
+				});
+			element.addEventListener("keyup", function(eventData)
+				{
+					if(_this.keyDown == false) { return; }
+					_this.keyDown = false
+					
+					_this.OnElementKeyUp(eventData.key)
+				});
+		}
+		ElementPositionFix(this.gameTextInputId, this.fontSize, this.x, this.y, this.width, this.height)
+		let _this = this
+
 	}
 
 	GetText()
 	{
 		let value = ElementValue(this.gameTextInputId)
-		if(value != null)
+		if(value != null && (value.length != this.text.length || value != this.text))
 		{
 			this.text = value
+			this.RaiseEventTextChanged(this.text)
 		}
 		return this.text
 	}
@@ -77,14 +131,19 @@ Utility.Game.UiElements.TextField = class
 		this.eventTextChanged.Raise(newText)
 	}
 
-	RaiseEventTextChangedIfTextChanged()
+	RegisterEventAccepted(eventHandler)
 	{
-		let text = this.GetText()
-		if(text != this.lastText)
-		{
-			this.lastText = text
-			this.RaiseEventTextChanged(text)
-		}
+		return this.eventAccepted.Register(eventHandler)
+	}
+
+	UnregisterEventAccepted(eventId)
+	{
+		return this.eventAccepted.Unregister(eventId)
+	}
+
+	RaiseEventAccepted(newText)
+	{
+		this.eventAccepted.Raise(newText)
 	}
 
 	Show()
@@ -100,6 +159,20 @@ Utility.Game.UiElements.TextField = class
 	MarkUnused()
 	{
 		this.unused = true
+	}
+
+	OnElementKeyDown(key)
+	{
+		if (key == "Enter") // If enter was pressed...
+		{
+			this.RaiseEventAccepted(this.GetText())
+		}
+		this.GetText()
+	}
+
+	OnElementKeyUp(key)
+	{
+		this.GetText()
 	}
 
 }

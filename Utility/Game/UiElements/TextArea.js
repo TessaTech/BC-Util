@@ -54,13 +54,49 @@ Utility.Game.UiElements.TextArea = class
 		this.lastText = this.text
 
 	}
+	
+	IsElementOnScreen(currentScreen)
+	{
+		if(currentScreen == null)
+		{
+			return false
+		}
+
+		return (this.screens.length == 0 || this.screens.includes(currentScreen) == true)
+	}
+
+	Draw(currentScreen)
+	{
+		if(this.visible == false || this.IsElementOnScreen(currentScreen) == false) // If text area isn't visible or the current screen is not it's active screen...
+		{
+			if(this.gameTextAreaExists == true) // If the underlying element exists...
+			{
+				//Remove it
+				ElementRemove(this.gameTextAreaId)
+				this.gameTextAreaExists = false
+			}
+			//Don't draw it
+			return;
+		}
+
+		if(this.gameTextAreaExists == false)
+		{
+			ElementCreateTextArea(this.gameTextAreaId)
+			this.UpdateText()
+			this.gameTextAreaExists = true
+		}
+		ElementPositionFix(this.gameTextAreaId, this.fontSize, this.x, this.y, this.width, this.height)
+		this.GetText()
+
+	}
 
 	GetText()
 	{
 		let value = ElementValue(this.gameTextAreaId)
-		if(value != null)
+		if(value != null && (value.length != this.text.length || value != this.text))
 		{
 			this.text = value
+			this.RaiseEventTextChanged(this.text)
 		}
 		return this.text
 	}
@@ -89,16 +125,6 @@ Utility.Game.UiElements.TextArea = class
 	RaiseEventTextChanged(newText)
 	{
 		this.eventTextChanged.Raise(newText)
-	}
-
-	RaiseEventTextChangedIfTextChanged()
-	{
-		let bufText = this.GetText()
-		if(bufText != this.lastText)
-		{
-			this.lastText = bufText
-			this.RaiseEventTextChanged(bufText)
-		}
 	}
 
 	Show()

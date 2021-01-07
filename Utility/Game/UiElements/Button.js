@@ -60,6 +60,38 @@ Utility.Game.UiElements.Button = class
 
 		this.eventClicked = new Utility.Event()
 	}
+	
+	IsElementOnScreen(currentScreen)
+	{
+		if(currentScreen == null)
+		{
+			return false
+		}
+
+		return (this.screens.length == 0 || this.screens.includes(currentScreen) == true)
+	}
+
+	//Methods to Draw specific GUI Elements
+	Draw(currentScreen)
+	{
+		if(this.visible == false || this.IsElementOnScreen(currentScreen) == false) // If button isn't visible or the current screen is not it's active screen...
+		{
+			//Don't draw it
+			return;
+		}
+
+		if(this.enabled == true) // If button is enabled...
+		{
+			//Draw enabled button
+			DrawButton(this.x, this.y, this.width, this.height, this.text, this.colorActive, this.image, this.tooltip)
+		}
+		else // If button is disabled...
+		{
+			//Draw disabled button
+			DrawButton(this.x, this.y, this.width, this.height, this.text, this.colorInactive, this.image, this.tooltip)
+		}
+
+	}
 
 	RegisterEventClicked(eventHandler)
 	{
