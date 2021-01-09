@@ -91,13 +91,18 @@ BeepMessages.BeepCommunicator = class
 				console.warn("Beep Communicator: Invalid Message for Beep Type " + beepType.type + " at version " + versionInfo.versionNumber)
 				return false;
 			}
+			if(beepType.messageType == null || typeof beepType.messageType != "string")
+			{
+				console.warn("Beep Communicator: Invalid Message for Beep Type " + beepType.type + " at version " + versionInfo.versionNumber)
+				return false;
+			}
 			if(beepType.messageColor == null || typeof beepType.messageColor != "string")
 			{
 				console.warn("Beep Communicator: Invalid Message Color for Beep Type " + beepType.type + " at version " + versionInfo.versionNumber + ". Default to Black!")
 				beepType.messageColor = "Black";
 			}
-			console.log("Received Message - "+memberName+"("+memberNumber+"): "+beepType.message+" [v-"+beepType.version+"][c-"+beepType.messageColor+"]")
-			this.eventReceivedMessage.Raise(memberNumber, memberName, beepType.version, beepType.message, beepType.messageColor)
+			console.log("Received "+beepType.messageType+" - "+memberName+"("+memberNumber+"): "+beepType.message+" [v-"+beepType.version+"][c-"+beepType.messageColor+"]")
+			this.eventReceivedMessage.Raise(memberNumber, memberName, beepType.version, beepType.messageType, beepType.message, beepType.messageColor)
 		}
 		else if(beepType.type == versionInfo.beepTypes.versionRequest) // If it's a version request...
 		{
@@ -139,25 +144,26 @@ BeepMessages.BeepCommunicator = class
 		this.gameBeeps.SendGenericBeep(memberNumber, beepType)
 	}
 
-	SendMessage(memberNumber, version, message, messageColor)
+	SendMessage(memberNumber, version, messageType, message, messageColor)
 	{
 		switch(version)
 		{
-			case 0: this.SendMessageVersion0(memberNumber, message, messageColor); break;
+			case 0: this.SendMessageVersion0(memberNumber, messageType, message, messageColor); break;
 			default: break;
 		}
 	}
 
-	SendMessageVersion0(memberNumber, message, messageColor)
+	SendMessageVersion0(memberNumber, messageType, message, messageColor)
 	{
 		let beepType =
 		{
 			version: this.latestVersion.versionNumber,
 			type: this.latestVersion.beepTypes.message,
+			messageType: messageType,
 			message: message,
 			messageColor: messageColor
 		}
-		console.log("Sending message to "+memberNumber+": "+message+" [c-"+messageColor+"]")
+		console.log("Sending "+messageType+" to "+memberNumber+": "+message+" [c-"+messageColor+"]")
 		this.gameBeeps.SendGenericBeep(memberNumber, beepType)
 	}
 

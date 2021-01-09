@@ -19,10 +19,11 @@ BeepMessages.BeepConversation = class
 
 BeepMessages.BeepConversation.Message = class
 {
-	constructor(initSenderMemberNumber, initSenderName, initMessage, initMessageColor, initReceiveTime)
+	constructor(initSenderMemberNumber, initSenderName, initMessageType, initMessage, initMessageColor, initReceiveTime)
 	{
 		this.senderMemberNumber = initSenderMemberNumber
 		this.senderName = initSenderName
+		this.messageType = initMessageType
 		this.message = initMessage
 		this.messageColor = initMessageColor
 		this.receiveTime = initReceiveTime

@@ -19,11 +19,10 @@ BeepMessages.BeepMessenger = class
 		this.eventReceivedMessage = new Utility.Event()
 
 		let _this = this
-		this.beepCommunicator.RegisterEventReceivedMessage(function(memberNumber, memberName, version, message, messageColor){ _this.OnBeepCommunicatorReceivedMessage(memberNumber, memberName, version, message, messageColor); })
+		this.beepCommunicator.RegisterEventReceivedMessage(function(memberNumber, memberName, version, messageType, message, messageColor){ _this.OnBeepCommunicatorReceivedMessage(memberNumber, memberName, version, messageType, message, messageColor); })
 		this.beepCommunicator.RegisterEventReceivedVersion(function(memberNumber, memberName, version){ _this.OnBeepCommunicatorReceivedVersion(memberNumber, memberName, version); })
 		
 	}
-
 
 	RegisterEventConversationOpened(eventHandler)
 	{
@@ -111,7 +110,7 @@ BeepMessages.BeepMessenger = class
 		return (conversation.version >= 0);
 	}
 
-	Send(memberNumber, message)
+	Send(memberNumber, messageType, message)
 	{
 		let conversation = this.GetConversation(memberNumber)
 
@@ -120,23 +119,41 @@ BeepMessages.BeepMessenger = class
 			return false
 		}
 		let player = this.gameCharacters.GetPlayer()
-		this.beepCommunicator.SendMessage(conversation.memberNumber, conversation.version, message, player.LabelColor)
+		this.beepCommunicator.SendMessage(conversation.memberNumber, conversation.version, messageType, message, player.LabelColor)
 		let dateNow = new Date(Date.now())
-		conversation.messageHistory.push(new BeepMessages.BeepConversation.Message(player.MemberNumber, player.Name, message, player.LabelColor, dateNow))
-		this.eventReceivedMessage.Raise(player.MemberNumber, player.Name, message, player.LabelColor, dateNow)
+		conversation.messageHistory.push(new BeepMessages.BeepConversation.Message(player.MemberNumber, player.Name, messageType, message, player.LabelColor, dateNow))
+		this.eventReceivedMessage.Raise(player.MemberNumber, player.Name, messageType, message, player.LabelColor, dateNow)
 
 		return true
 
 	}
 
-	OnBeepCommunicatorReceivedMessage(memberNumber, memberName, version, message, messageColor)
+	SendMessage(memberNumber, message)
+	{
+		return this.Send(memberNumber, "Message", message)
+
+	}
+
+	SendEmote(memberNumber, message)
+	{
+		return this.Send(memberNumber, "Emote", message)
+
+	}
+
+	SendAction(memberNumber, message)
+	{
+		return this.Send(memberNumber, "Action", message)
+
+	}
+
+	OnBeepCommunicatorReceivedMessage(memberNumber, memberName, version, messageType, message, messageColor)
 	{
 		let conversation = this.GetConversation(memberNumber)
 
 		conversation.version = version
 		let dateNow = new Date(Date.now())
-		conversation.messageHistory.push(new BeepMessages.BeepConversation.Message(memberNumber, memberName, message, messageColor, dateNow))
-		this.eventReceivedMessage.Raise(memberNumber, memberName, message, messageColor, dateNow)
+		conversation.messageHistory.push(new BeepMessages.BeepConversation.Message(memberNumber, memberName, messageType, message, messageColor, dateNow))
+		this.eventReceivedMessage.Raise(memberNumber, memberName, messageType, message, messageColor, dateNow)
 	}
 
 	OnBeepCommunicatorReceivedVersion(memberNumber, memberName, version)

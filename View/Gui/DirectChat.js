@@ -7,8 +7,9 @@ if(Gui == undefined)
 
 Gui.DirectChat = class
 {
-	constructor(initGameUserInterface, initGameFriendList, initBeepMessenger)
+	constructor(initGameCharacters, initGameUserInterface, initGameFriendList, initBeepMessenger)
 	{
+		this.gameCharacters = initGameCharacters
 		this.gameUserInterface = initGameUserInterface
 		this.gameFriendList = initGameFriendList
 		this.beepMessenger = initBeepMessenger
@@ -24,7 +25,8 @@ Gui.DirectChat = class
 		this.colorButtonDefault = "White"
 		this.colorButtonUnreadMessage = "#F08040"
 
-		this.dropDownPartnerColors = { }
+		this.dropDownPartnerDisplayData = { }
+		this.unreadMessageCount = 0
 
 		let chatScreens = [
 			"AsylumBedroom", "AsylumEntrance", "AsylumMeeting", "AsylumTherapy",
@@ -41,6 +43,10 @@ Gui.DirectChat = class
 			"Shibari", "Shop", "SlaveMarket", "Stable"
 			]
 
+		let fontSizePartner = 24
+		let fontSizeMessages = 30
+		let fontSizeSend = 28
+
 		//Calculate GUI Element Coodinates
 		let x = 400
 		let y = 100
@@ -51,30 +57,30 @@ Gui.DirectChat = class
 		let widthSend = width - 10
 		let widthMessages = width
 
-		let heightPartner = 50
+		let heightPartner = 29
 		let heightSend = 40
 		let heightMessages = height - heightSend - heightPartner
 
 		let xPartner = x
 		let xMessages = x
-		let xSend = x
+		let xSend = x + 2
 
 		let yPartner = y
 		let yMessages = yPartner + heightPartner
-		let ySend = yMessages + heightMessages
+		let ySend = yMessages + heightMessages + 3
 
 		//Create GUI Elements
 		this.buttonShowHide = this.gameUserInterface.AddButton(15, 925, 60, 60, "", this.colorButtonDefault, "#808080", "Icons/Small/Chat.png", "Direct Chat", chatScreens, true, true)
 
-		this.dropDownPartner = this.gameUserInterface.AddDropDown(xPartner, yPartner, widthPartner, heightPartner, 24, [[0, "Blaa"], [1, "BlaBlaa"]], 0, chatScreens, false)
-		this.textAreaMessages = this.gameUserInterface.AddHtmlTextArea(xMessages, yMessages, widthMessages, heightMessages, 24, -1, "", chatScreens, false)
-		this.textFieldSend = this.gameUserInterface.AddTextField(xSend, ySend, widthSend, heightSend, 24, 250, "", chatScreens, false)
+		this.dropDownPartner = this.gameUserInterface.AddDropDown(xPartner, yPartner, widthPartner, heightPartner, fontSizePartner, [[0, "Blaa"], [1, "BlaBlaa"]], 0, chatScreens, false)
+		this.textAreaMessages = this.gameUserInterface.AddHtmlTextArea(xMessages, yMessages, widthMessages, heightMessages, fontSizeMessages, -1, "", chatScreens, false)
+		this.textFieldSend = this.gameUserInterface.AddTextField(xSend, ySend, widthSend, heightSend, fontSizeSend, 250, "", chatScreens, false)
 		
 		//Register Events
 		let _this = this
 		this.gameFriendList.RegisterEventOnlineFriendsChanged(function(onlineFriends){ _this.OnGameFriendListEventOnlineFriendsChanged(onlineFriends); })
 		this.beepMessenger.RegisterEventConversationOpened(function(memberNumber){ _this.OnBeepMessengerConversationOpened(memberNumber); })
-		this.beepMessenger.RegisterEventReceivedMessage(function(memberNumber, memberName, message, date, messageColor){ _this.OnBeepMessengerReceivedMessage(memberNumber, memberName, message, date, messageColor); })
+		this.beepMessenger.RegisterEventReceivedMessage(function(memberNumber, memberName, messageType, message, messageColor, date){ _this.OnBeepMessengerReceivedMessage(memberNumber, memberName, messageType, message, messageColor, date); })
 
 		this.buttonShowHide.RegisterEventClicked(function(){ _this.OnButtonShowHideClick(); })
 		this.dropDownPartner.RegisterEventSelectionChanged(function(newSelectedElement){ _this.OnDropDownPartnerSelectionChanged(newSelectedElement); })
@@ -108,12 +114,12 @@ Gui.DirectChat = class
 		let dropDownEntries = ["<div>None</div>"]
 		for(let i=0; i<partnerEntries.length; i++)
 		{
-			if(this.dropDownPartnerColors[partnerEntries[i].memberNumber] == null) // If no color has been defined...
+			if(this.dropDownPartnerDisplayData[partnerEntries[i].memberNumber] == null) // If no color has been defined...
 			{
-				this.dropDownPartnerColors[partnerEntries[i].memberNumber] = this.colorListElementUnknown
+				this.dropDownPartnerDisplayData[partnerEntries[i].memberNumber] = { unread: false, color: this.colorListElementUnknown }
 			}
 
-			dropDownEntries.push("<div style=background-color:"+this.dropDownPartnerColors[partnerEntries[i].memberNumber]+">" + partnerEntries[i].name+" - "+ partnerEntries[i].memberNumber +" [" + partnerEntries[i].room + "]</div>")
+			dropDownEntries.push("<div style=background-color:"+this.dropDownPartnerDisplayData[partnerEntries[i].memberNumber].color+">" + partnerEntries[i].name+" - "+ partnerEntries[i].memberNumber +" [" + partnerEntries[i].room + "]</div>")
 			if(changed == false
 				&& (partnerEntries[i].memberNumber != this.lastPartnerEntries[i].memberNumber
 					|| partnerEntries[i].name != this.lastPartnerEntries[i].name
@@ -137,6 +143,44 @@ Gui.DirectChat = class
 		
 	}
 
+	SelectChatPartner(memberNumber)
+	{
+		this.beepMessenger.Close(memberNumber)
+		this.beepMessenger.Open(memberNumber)
+
+		this.message = ""
+		let messageHistory = this.beepMessenger.GetMessageHistory(memberNumber)
+		for(let i=0; i<messageHistory.length; i++)
+		{
+			this.message += this.ConstructMessageEntry(messageHistory[i].receiveTime, messageHistory[i].senderMemberNumber, messageHistory[i].senderName, messageHistory[i].messageType, messageHistory[i].message, messageHistory[i].messageColor)
+			this.textAreaMessages.SetText(this.message)
+
+		}
+
+		if(this.dropDownPartnerDisplayData[memberNumber].unread == true)
+		{
+			this.dropDownPartnerDisplayData[memberNumber].unread = false
+			this.unreadMessageCount -= 1
+		}
+
+		if(this.beepMessenger.IsPending(memberNumber) == true) // If no color has been defined...
+		{
+			this.dropDownPartnerDisplayData[memberNumber].color = this.colorListElementPending
+		}
+		else if(this.beepMessenger.IsOpen(memberNumber) == true) // If no color has been defined...
+		{
+			this.dropDownPartnerDisplayData[memberNumber].color = this.colorListElementAvailable
+		}
+		if(this.unreadMessageCount <= 0)
+		{
+			this.buttonShowHide.colorActive = this.colorButtonDefault
+		}
+		this.UpdateDropDownPartner(this.lastPartnerEntries, true)
+		this.textAreaMessages.SetText(this.message)
+	}
+
+
+
 	OnGameFriendListEventOnlineFriendsChanged(onlineFriends)
 	{
 		this.UpdateDropDownPartner(onlineFriends, false)
@@ -151,13 +195,18 @@ Gui.DirectChat = class
 			this.gameUserInterface.BlockGameClick()
 			this.gameUserInterface.BlockGameKeyDown()
 
-			this.buttonShowHide.colorActive = this.colorButtonDefault
-
 			this.dropDownPartner.Show()
 			this.textAreaMessages.Show()
 			this.textFieldSend.Show()
 			
 			this.gameFriendList.QuerryFriendlist()
+
+			let selectedIndex = this.dropDownPartner.GetSelectedIndex()
+			if(selectedIndex > 0)
+			{
+				let selectedPartnerMemberNumber = this.lastPartnerEntries[selectedIndex-1].memberNumber
+				this.SelectChatPartner(selectedPartnerMemberNumber)
+			}
 
 		}
 		else
@@ -182,26 +231,7 @@ Gui.DirectChat = class
 			return;
 		}
 		let selectedPartnerMemberNumber = this.lastPartnerEntries[selectedIndex-1].memberNumber
-		this.beepMessenger.Close(selectedPartnerMemberNumber)
-		this.beepMessenger.Open(selectedPartnerMemberNumber)
-		this.message = ""
-		let messageHistory = this.beepMessenger.GetMessageHistory(selectedPartnerMemberNumber)
-		for(let i=0; i<messageHistory.length; i++)
-		{
-			this.message += this.ConstructMessageEntry(messageHistory[i].receiveTime, messageHistory[i].senderMemberNumber, messageHistory[i].senderName, messageHistory[i].message, messageHistory[i].messageColor)
-			this.textAreaMessages.SetText(this.message)
-
-		}
-		if(this.beepMessenger.IsPending(selectedPartnerMemberNumber) == true) // If no color has been defined...
-		{
-			this.dropDownPartnerColors[selectedPartnerMemberNumber] = this.colorListElementPending
-		}
-		else if(this.beepMessenger.IsOpen(selectedPartnerMemberNumber) == true) // If no color has been defined...
-		{
-			this.dropDownPartnerColors[selectedPartnerMemberNumber] = this.colorListElementAvailable
-		}
-		this.UpdateDropDownPartner(this.lastPartnerEntries, true)
-		this.textAreaMessages.SetText(this.message)
+		this.SelectChatPartner(selectedPartnerMemberNumber)
 	}
 
 	OnTextFieldSendAccepted(newText)
@@ -217,49 +247,111 @@ Gui.DirectChat = class
 			return;
 		}
 		let targetMemberNumber = this.lastPartnerEntries[selectedIndex-1].memberNumber
-		this.beepMessenger.Send(targetMemberNumber, newText)
+
+		if(newText.indexOf("**") == 0) // If it's an action...
+		{
+			newText = newText.substr(2)
+			this.beepMessenger.SendAction(targetMemberNumber, newText)
+		}
+		else if(newText.indexOf("/action ") == 0) // If it's an action...
+		{
+			newText = newText.substr(8)
+			this.beepMessenger.SendAction(targetMemberNumber, newText)
+		}
+		else if(newText.indexOf("*") == 0) // If it's an emote...
+		{
+			newText = newText.substr(1)
+			if(newText.charAt(0) != "\'" && newText.charAt(0) != "," && newText.charAt(0) != " ")
+			{
+				newText = " " + newText
+			}
+			this.beepMessenger.SendEmote(targetMemberNumber, newText)
+		}
+		else if(newText.indexOf("/me ") == 0) // If it's an emote...
+		{
+			newText = newText.substr(3)
+			this.beepMessenger.SendEmote(targetMemberNumber, newText)
+		}
+		else // If it's a regular message...
+		{
+			this.beepMessenger.SendMessage(targetMemberNumber, newText)
+		}
 
 		this.textFieldSend.SetText("")
 	}
 
 	OnBeepMessengerConversationOpened(memberNumber)
 	{
-		this.dropDownPartnerColors[memberNumber] = this.colorListElementAvailable
+		this.dropDownPartnerDisplayData[memberNumber].color = this.colorListElementAvailable
 		this.UpdateDropDownPartner(this.lastPartnerEntries, true)
 	}
 
-	OnBeepMessengerReceivedMessage(memberNumber, memberName, message, messageColor, date)
+	OnBeepMessengerReceivedMessage(memberNumber, memberName, messageType, message, messageColor, date)
 	{
-		let isSelectedConversation = false
+		let appendMessage = false
 		let selectedIndex = this.dropDownPartner.GetSelectedIndex()
 
-		if(selectedIndex > 0 && selectedIndex <= this.lastPartnerEntries.length) // If no valid partner is selected...
+		if(this.visible == true && selectedIndex > 0 && selectedIndex <= this.lastPartnerEntries.length) // If the chat is visible and a valid partner is selected...
 		{
-			isSelectedConversation = (this.lastPartnerEntries[selectedIndex-1].memberNumber == memberNumber)
+			//appendMessage is true if we received a message from the currently selected chat partner or the player just sent it
+			appendMessage = (this.lastPartnerEntries[selectedIndex-1].memberNumber == memberNumber) ||
+							(this.gameCharacters.GetPlayer().MemberNumber == memberNumber)
 		}
-		if(isSelectedConversation == true) // If the received message is of the currently selected partner...
+		if(appendMessage == true) // If the received message is of the currently selected partner or the player...
 		{
-			this.message += this.ConstructMessageEntry(date, memberNumber, memberName, message, messageColor)
+			this.message += this.ConstructMessageEntry(date, memberNumber, memberName, messageType, message, messageColor)
 			this.textAreaMessages.SetText(this.message)
 		}
-		else // If the received message is of a not currently selected partner...
+		else // If the received message is not appended to the current communication log...
 		{
-			this.buttonShowHide.colorActive = this.colorButtonUnreadMessage
-			this.dropDownPartnerColors[memberNumber] = this.colorListElementUnreadMessage
+			if(this.dropDownPartnerDisplayData[memberNumber].unread == false)
+			{
+				this.dropDownPartnerDisplayData[memberNumber].unread = true
+				this.unreadMessageCount += 1
+			}
+			this.dropDownPartnerDisplayData[memberNumber].color = this.colorListElementUnreadMessage
 			this.UpdateDropDownPartner(this.lastPartnerEntries, true)
+			this.buttonShowHide.colorActive = this.colorButtonUnreadMessage
 		}
 
 	}
 
-	ConstructMessageEntry(date, senderNumber, senderName, message, messageColor)
+	TransparentColor(color)
 	{
+		let red = color.substring(1, 3)
+		let green = color.substring(3, 5)
+		let blue = color.substring(5, 7);
+		return "rgba(" + parseInt(red, 16) + "," + parseInt(green, 16) + "," + parseInt(blue, 16) + ",0.1)";
+	}
+
+	ConstructMessageEntry(date, senderNumber, senderName, messageType, message, messageColor)
+	{
+		let retVar = ""
 		let tmpMessage = this.ClearHtmlTags(message)
 		let tmpDate = date.getMonth()+"."+date.getDate()+"."+date.getFullYear()+" "+
 			date.getHours()+" "+date.getMinutes()+":"+date.getSeconds()
-		return "<div class=\"ChatMessage ChatMessageChat\" data-time=\""+tmpDate+"\" data-sender=\""+senderNumber+"\">"+"\n"+
-					"<span class=\"ChatMessageName\" style=\"color:"+messageColor+"\">"+senderName+":</span>"+"\n"+
-					tmpMessage+"\n"+
-				"</div>"
+		if(messageType == "Message")
+		{
+			retVar =	"<div class=\"ChatMessage ChatMessageChat\" data-time=\""+tmpDate+"\" data-sender=\""+senderNumber+"\">"+"\n"+
+							"<span class=\"ChatMessageName\" style=\"color:"+messageColor+"\">"+senderName+":</span>"+"\n"+
+							tmpMessage+"\n"+
+						"</div>"
+		}
+		else if(messageType == "Emote")
+		{
+			retVar =	"<div class=\"ChatMessage ChatMessageEmote\" data-time=\""+tmpDate+"\" data-sender=\""+senderNumber+"\" style=\"background-color: "+this.TransparentColor(messageColor)+";\">"+"\n"+
+							senderName + tmpMessage+"\n"+
+						"</div>"
+		}
+		else if(messageType == "Action")
+		{
+			retVar =	"<div class=\"ChatMessage ChatMessageEmote\" data-time=\""+tmpDate+"\" data-sender=\""+senderNumber+"\" style=\"background-color: "+this.TransparentColor(messageColor)+";\">"+"\n"+
+							tmpMessage+"\n"+
+						"</div>"
+		}
+
+		return retVar
+
 	}
 
 }
