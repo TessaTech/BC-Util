@@ -16,6 +16,8 @@ Mod = class
 		this.LogLoadSection("Game Interface")
 		this.gameAssets = new Utility.Game.Assets()
 		this.gameCharacters = new Utility.Game.Characters(this.gameAssets)
+		this.gameBeeps = new Utility.Game.Beeps()
+		this.gameFriendList = new Utility.Game.FriendList()
 		this.gameScreenProperties = new Utility.Game.ScreenProperties()
 		this.gameWardrobe = new Utility.Game.Wardrobe()
 		this.gameUserInterface = new Utility.Game.UserInterface(this.gameScreenProperties)
@@ -29,10 +31,15 @@ Mod = class
 		this.LogLoadSection("Appearance Utilities")
 		this.appearanceUtilities = new AppearanceUtilities.AppearanceUtilities(this.gameCharacters, this.gameScreenProperties)
 
+		this.LogLoadSection("Beep Messages")
+		let beepCommunicator = new BeepMessages.BeepCommunicator(this.gameBeeps)
+		this.beepMessenger = new BeepMessages.BeepMessenger(this.gameCharacters, this.gameFriendList, beepCommunicator)
+
 		//Gui
 		this.LogLoadSection("Graphical user Interfaces")
 		this.guiWardrobeUtilities = new Gui.WardrobeUtilities(this.gameUserInterface, this.wardrobeUtilities)
 		this.guiAppearanceUtilities = new Gui.AppearanceUtilities(this.gameUserInterface, this.gameScreenProperties, this.appearanceUtilities)
+		this.guiDirectChat = new Gui.DirectChat(this.gameCharacters, this.gameUserInterface, this.gameFriendList, this.beepMessenger)
 
 		this.LogFinishedLoading()
 

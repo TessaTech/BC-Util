@@ -44,6 +44,7 @@
 				"Utility/Game/Assets.js",
 				"Utility/Game/Beeps.js",
 				"Utility/Game/Characters.js",
+				"Utility/Game/FriendList.js",
 				"Utility/Game/UserInterface.js",
 				"Utility/Game/Wardrobe.js",
 				"Utility/Game/ScreenProperties.js",
