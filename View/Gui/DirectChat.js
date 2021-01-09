@@ -93,6 +93,15 @@ Gui.DirectChat = class
 		return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 	}
 
+	GetDropDownPartnerDisplayData(memberNumber)
+	{
+		if(this.dropDownPartnerDisplayData[memberNumber] == null) // If no color has been defined...
+		{
+			this.dropDownPartnerDisplayData[memberNumber] = { unread: false, color: this.colorListElementUnknown }
+		}
+		return this.dropDownPartnerDisplayData[memberNumber]
+	}
+
 	UpdateDropDownPartner(partnerEntries, force)
 	{
 		if(this.visible == false)
@@ -114,12 +123,7 @@ Gui.DirectChat = class
 		let dropDownEntries = ["<div>None</div>"]
 		for(let i=0; i<partnerEntries.length; i++)
 		{
-			if(this.dropDownPartnerDisplayData[partnerEntries[i].memberNumber] == null) // If no color has been defined...
-			{
-				this.dropDownPartnerDisplayData[partnerEntries[i].memberNumber] = { unread: false, color: this.colorListElementUnknown }
-			}
-
-			dropDownEntries.push("<div style=background-color:"+this.dropDownPartnerDisplayData[partnerEntries[i].memberNumber].color+">" + partnerEntries[i].name+" - "+ partnerEntries[i].memberNumber +" [" + partnerEntries[i].room + "]</div>")
+			dropDownEntries.push("<div style=background-color:"+this.GetDropDownPartnerDisplayData(partnerEntries[i].memberNumber).color+">" + partnerEntries[i].name+" - "+ partnerEntries[i].memberNumber +" [" + partnerEntries[i].room + "]</div>")
 			if(changed == false
 				&& (partnerEntries[i].memberNumber != this.lastPartnerEntries[i].memberNumber
 					|| partnerEntries[i].name != this.lastPartnerEntries[i].name
@@ -157,19 +161,20 @@ Gui.DirectChat = class
 
 		}
 
-		if(this.dropDownPartnerDisplayData[memberNumber].unread == true)
+		let displayData = this.GetDropDownPartnerDisplayData(memberNumber)
+		if(displayData.unread == true)
 		{
-			this.dropDownPartnerDisplayData[memberNumber].unread = false
+			displayData.unread = false
 			this.unreadMessageCount -= 1
 		}
 
 		if(this.beepMessenger.IsPending(memberNumber) == true) // If no color has been defined...
 		{
-			this.dropDownPartnerDisplayData[memberNumber].color = this.colorListElementPending
+			displayData.color = this.colorListElementPending
 		}
 		else if(this.beepMessenger.IsOpen(memberNumber) == true) // If no color has been defined...
 		{
-			this.dropDownPartnerDisplayData[memberNumber].color = this.colorListElementAvailable
+			displayData.color = this.colorListElementAvailable
 		}
 		if(this.unreadMessageCount <= 0)
 		{
@@ -282,7 +287,7 @@ Gui.DirectChat = class
 
 	OnBeepMessengerConversationOpened(memberNumber)
 	{
-		this.dropDownPartnerDisplayData[memberNumber].color = this.colorListElementAvailable
+		this.GetDropDownPartnerDisplayData(memberNumber).color = this.colorListElementAvailable
 		this.UpdateDropDownPartner(this.lastPartnerEntries, true)
 	}
 
@@ -304,12 +309,13 @@ Gui.DirectChat = class
 		}
 		else // If the received message is not appended to the current communication log...
 		{
-			if(this.dropDownPartnerDisplayData[memberNumber].unread == false)
+			let displayData = this.GetDropDownPartnerDisplayData(memberNumber)
+			if(displayData.unread == false)
 			{
-				this.dropDownPartnerDisplayData[memberNumber].unread = true
+				displayData.unread = true
 				this.unreadMessageCount += 1
 			}
-			this.dropDownPartnerDisplayData[memberNumber].color = this.colorListElementUnreadMessage
+			displayData.color = this.colorListElementUnreadMessage
 			this.UpdateDropDownPartner(this.lastPartnerEntries, true)
 			this.buttonShowHide.colorActive = this.colorButtonUnreadMessage
 		}
