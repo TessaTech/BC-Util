@@ -22,23 +22,39 @@ Utility.Game.Characters = class
 
 		this.functionCallHooks = {}
 		this.functionCallHooks.LoginResponse = new Utility.FunctionCallHook('LoginResponse')
-
+		this.functionCallHooks.InventoryWear = new Utility.FunctionCallHook('InventoryWear')
+		this.functionCallHooks.InventoryRemove = new Utility.FunctionCallHook('InventoryRemove')
+		this.functionCallHooks.CharacterAppearanceSetItem = new Utility.FunctionCallHook('CharacterAppearanceSetItem')
+		//CharacterAppearanceSetItem(C, Group, ItemAsset, NewColor, DifficultyFactor, ItemMemberNumber, Refresh)
 		this.eventLogin = new Utility.Event()
+		this.eventAppearanceChange = new Utility.Event()
 
 		let _this = this
 		this.functionCallHooks.LoginResponse.RegisterEventBefore(function(characterData){ _this.OnHookLoginResponseBefore(characterData); })
 		this.functionCallHooks.LoginResponse.RegisterEventAfter(function(characterData){ _this.OnHookLoginResponseAfter(characterData); })
-
+		this.functionCallHooks.CharacterAppearanceSetItem.RegisterEventBefore(function(player, assetGroup, itemAsset, color, difficulty, memberNumber, refresh){ _this.OnHookCharacterAppearanceSetItemBefore(player, assetGroup, itemAsset, color, difficulty, memberNumber, refresh); })
+		
 	}
 
+	//Event Register/Unregister functions
 	RegisterEventLogin(eventHandler)
 	{
 		return this.eventLogin.Register(eventHandler)
 	}
 
-	UnregisterEventAfterLogin(eventId)
+	UnregisterEventLogin(eventId)
 	{
 		this.eventLogin.Unregister(eventId)
+	}
+
+	RegisterEventAppearanceChange(eventHandler)
+	{
+		return this.eventAppearanceChange.Register(eventHandler)
+	}
+
+	UnregisterEventAppearanceChange(eventId)
+	{
+		this.eventAppearanceChange.Unregister(eventId)
 	}
 
 	//EngineUtility
@@ -68,27 +84,29 @@ Utility.Game.Characters = class
 	}
 
 	//Appearance
-	ChangeAppearance(player, itemGroup, itemAsset, properties, newColor, difficulty, refresh)
+	ChangeAppearance(player, itemGroup, itemAsset, properties, newColor, difficulty, refresh, isTotalDifficulty)
 	{
+		if(isTotalDifficulty == null) { isTotalDifficulty = false; }
+
 		// Sets the difficulty factor
 		if (newColor == null) { newColor = itemAsset.Group.ColorSchema[0]; }
 		if (difficulty == null) { difficulty = 0; }
 		if (refresh == null) { refresh = true; }
 	
 		// Removes the previous if we need to
-		var itemPositionId = CharacterAppearanceGetCurrentValue(player, itemGroup, "ID");
+		let itemPositionId = CharacterAppearanceGetCurrentValue(player, itemGroup, "ID");
 		if (itemPositionId != "None")
 		{
 			player.Appearance.splice(itemPositionId, 1);
 		}
 	
 		// Add the new item to the character appearance
-		if (itemAsset !== null)
+		if (itemAsset != null)
 		{
-			var newItem = null
-			var newDifficulty = 0
+			let newItem = null
+			let newDifficulty = 0
 			
-			if(itemAsset.Difficulty != null)
+			if(isTotalDifficulty == false && itemAsset.Difficulty != null)
 			{
 				newDifficulty = parseInt(itemAsset.Difficulty, 10)
 			}
@@ -99,7 +117,7 @@ Utility.Game.Characters = class
 				Difficulty: newDifficulty,
 				Color: newColor
 			}
-			if (properties !== null) // If properties are passed...
+			if (properties != null) // If properties are passed...
 			{
 				//Add them
 				newItem.Property = properties;
@@ -108,8 +126,13 @@ Utility.Game.Characters = class
 		}
 	
 		// Draw the character canvas and calculate the effects on the character
-		if (refresh === true) { CharacterRefresh(player); }
+		if (refresh == true) { CharacterRefresh(player); }
 	
+	}
+
+	ChangeAppearanceSelf(itemGroup, itemAsset, properties, newColor, difficulty, refresh, isTotalDifficulty)
+	{
+		this.ChangeAppearance(Player, itemGroup, itemAsset, properties, newColor, difficulty, refresh, isTotalDifficulty)
 	}
 
 	SetLayerPriority(player, assetGroup, priority, chatRoomUpdate)
@@ -145,7 +168,7 @@ Utility.Game.Characters = class
 
 	SetLayerPriorityByMNr(memberNumber, assetGroup, priority)
 	{
-		var bufPlayer = null
+		let bufPlayer = null
 	
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		return this.SetLayerPriority(bufPlayer, assetGroup, priority)
@@ -193,7 +216,7 @@ Utility.Game.Characters = class
 
 	GetLayerPriorityByMNr(memberNumber, assetGroup)
 	{
-		var bufPlayer = null
+		let bufPlayer = null
 	
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		return this.GetLayerPriority(bufPlayer, assetGroup)
@@ -263,7 +286,7 @@ Utility.Game.Characters = class
 	
 	TiePlayerByMNrIfPossible(memberNumber, a_Item, properties, a_ItemGroup, ItemColor, Difficulty)
 	{
-		var bufPlayer = null
+		let bufPlayer = null
 	
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		return this.TiePlayerIfPossible(bufPlayer, a_Item, properties, a_ItemGroup, ItemColor, Difficulty)
@@ -315,21 +338,89 @@ Utility.Game.Characters = class
 	
 	TiePlayerByMNr(memberNumber, a_Item, properties, a_ItemGroup, ItemColor, Difficulty)
 	{
-		var bufPlayer = null
+		let bufPlayer = null
 	
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		this.TiePlayer(bufPlayer, a_Item, properties, a_ItemGroup, ItemColor, Difficulty)
 	}
 	
+	SetItemProperty(player, itemGroup, propertyName, propertyValue)
+	{
+		let item = null
+		
+		item = this.GetItem(player, itemGroup)
+		if(item === null)
+		{
+			return;
+		}
+
+		if(item.Property == null)
+		{
+			item.Property = {}
+		}
+
+		item.Property[propertyName] = propertyValue
+		if (CurrentScreen == "ChatRoom")
+		{
+			this.CharacterItemUpdate(player, itemGroup)
+		}
+
+	}
+
+	SetItemPropertySelf(itemGroup, propertyName, propertyValue)
+	{
+		this.SetItemProperty(Player, itemGroup, propertyName, propertyValue)
+	}
+	
+	SetItemPropertyByMNr(memberNumber, itemGroup, propertyName, propertyValue)
+	{
+		let bufPlayer = null
+	
+		bufPlayer = this.GetCharacterByMNr(memberNumber)
+		this.SetItemProperty(bufPlayer, itemGroup, propertyName, propertyValue)
+	}
+
+	GetItemProperty(player, itemGroup, propertyName)
+	{
+		let item = null
+		
+		item = this.GetItem(player, itemGroup)
+		if(item == null)
+		{
+			return undefined;
+		}
+
+		if(item.Property == null)
+		{
+			return undefined;
+		}
+
+		return item.Property[propertyName]
+
+	}
+
+	GetItemPropertySelf(itemGroup, propertyName)
+	{
+		return this.GetItemProperty(Player, itemGroup, propertyName)
+	}
+	
+	GetItemPropertyByMNr(memberNumber, itemGroup, propertyName)
+	{
+		let bufPlayer = null
+	
+		bufPlayer = this.GetCharacterByMNr(memberNumber)
+		return this.GetItemProperty(bufPlayer, itemGroup, propertyName)
+	}
+
 	ChangeDifficulty(player, itemGroup, difficulty)
 	{
-		var item = null
+		let item = null
 		//InventorySetDifficulty(player, itemGroup, difficulty)
 		
 		item = this.GetItem(player, itemGroup)
 		if(item === null)
 		{
-			return
+			return;
 		}
 		
 		if (difficulty < 0)	{ difficulty = 0; }
@@ -536,9 +627,11 @@ Utility.Game.Characters = class
 	}
 	
 	//Combination Lock
-	ChangeLockCombination(player, itemGroup, oldCombination, newCombination)
+	ChangeLockCombination(player, itemGroup, oldCombination, newCombination, silent)
 	{
 		var lockedItem = null
+
+		if(silent == null) { silent = true; }
 	
 		//Convert numbers to strings
 		if(typeof oldCombination == "number") //If old combination is a number...
@@ -561,12 +654,12 @@ Utility.Game.Characters = class
 		}
 		if(lockedItem.Property.LockedBy != "CombinationPadlock")
 		{
-			console.log("Failed: Lock not a combination lock")
+			console.log("Failed: Lock not a combination padlock")
 			return
 		}
 		if (oldCombination !== null && oldCombination != lockedItem.Property.CombinationNumber)
 		{
-			console.log("Failed: Wrong combination")
+			console.log("Failed: Wrong combination" && silent == false)
 			if (CurrentScreen == "ChatRoom")
 			{
 				dictionary = [];
@@ -592,7 +685,7 @@ Utility.Game.Characters = class
 		
 		//Operational Code
 		lockedItem.Property.CombinationNumber = newCombination;
-		if (CurrentScreen == "ChatRoom")
+		if (CurrentScreen == "ChatRoom" && silent == false)
 		{
 			dictionary = [];
 			dictionary.push({Tag: "SourceCharacter", Text: Player.Name, MemberNumber: Player.MemberNumber});
@@ -633,7 +726,7 @@ Utility.Game.Characters = class
 		}
 		if(lockedItem.Property.LockedBy != "CombinationPadlock")
 		{
-			console.log("Failed: Lock not a combination lock")
+			console.log("Failed: Lock not a combination padlock")
 			return ""
 		}
 		return lockedItem.Property.CombinationNumber
@@ -681,6 +774,116 @@ Utility.Game.Characters = class
 		return this.RandomizeLockCombination(bufPlayer, itemGroup, a_OldCombination, a_NoReturn)
 	}
 	
+	//Combination Lock
+	ChangeLockPassword(player, itemGroup, oldPassword, newPassword, newHint, silent)
+	{
+		var lockedItem = null
+
+		newPassword = newPassword.toUpperCase()
+
+		if(newHint == null || newHint == "") { newHint = "Take a guess..."; }
+		if(silent == null) { silent = true; }
+		
+		//Function Guards
+		lockedItem = player.Appearance.find(x => (x.Asset.Group.Name === itemGroup))
+		if(lockedItem == null)
+		{
+			console.log("Failed: Locked item not found")
+			return
+		}
+		if(lockedItem.Property == null)
+		{
+			console.log("Failed: Lock property not found")
+			return
+		}
+		if(lockedItem.Property.LockedBy != "PasswordPadlock")
+		{
+			console.log("Failed: Lock not a password padlock")
+			return
+		}
+		if (oldPassword !== null && oldPassword.toUpperCase() != lockedItem.Property.Password)
+		{
+			console.log("Failed: Wrong password")
+			return
+		}
+		let regex = /^[A-Z]+$/;
+		if ((typeof newPassword != "string") ||
+			(typeof newPassword == "string" && newPassword.match(regex) === null))
+		{
+			console.log("Failed: Password contains illegal symbols")
+			return
+		}
+		if (newPassword.length > 8)
+		{
+			console.log("Failed: Password is longer then 8 characters long")
+			return
+		}
+		
+		//Operational Code
+		lockedItem.Property.Password = newPassword
+		lockedItem.Property.LockSet = true
+		lockedItem.Property.Hint = newHint
+		if (CurrentScreen == "ChatRoom" && silent == false)
+		{
+			dictionary = [];
+			dictionary.push({Tag: "SourceCharacter", Text: Player.Name, MemberNumber: Player.MemberNumber});
+			dictionary.push({Tag: "DestinationCharacter", Text: player.Name, MemberNumber: player.MemberNumber});
+			dictionary.push({Tag: "FocusAssetGroup", AssetGroupName: itemGroup});
+			this.ChatRoomPublishCustomAction("PasswordChangeSuccess", dictionary, player);
+			ChatRoomCharacterUpdate(player);
+		}
+		else
+		{
+			CharacterRefresh(player);
+		}
+	}
+	
+	ChangeLockPasswordSelf(itemGroup, oldPassword, newPassword, newHint, silent)
+	{
+		this.ChangeLockPassword(Character[0], itemGroup, oldPassword, newPassword, newHint, silent)
+	}
+	
+	ChangeLockPasswordByMNr(memberNumber, itemGroup, oldPassword, newPassword, newHint, silent)
+	{
+		var bufPlayer = null
+	
+		bufPlayer = this.GetCharacterByMNr(memberNumber)
+		
+		this.ChangeLockPassword(bufPlayer, itemGroup, oldPassword, newPassword, newHint, silent)
+	}
+	
+	GetLockPassword(player, itemGroup)
+	{
+		let lockedItem = null
+	
+		lockedItem = player.Appearance.find(x => (x.Asset.Group.Name === itemGroup))
+		if(lockedItem == null)
+		{
+			console.log("Failed: Lock not found")
+			return ""
+		}
+		if(lockedItem.Property.LockedBy != "PasswordPadlock")
+		{
+			console.log("Failed: Lock not a password padlock")
+			return ""
+		}
+		return lockedItem.Property.Password
+	}
+	
+	GetLockPasswordSelf(itemGroup)
+	{
+		return this.GetLockPassword(Character[0], itemGroup)
+	}
+	
+	GetLockPasswordByMNr(memberNumber, itemGroup)
+	{
+		var bufPlayer = null
+	
+		bufPlayer = this.GetCharacterByMNr(memberNumber)
+		
+		return this.GetLockPassword(bufPlayer, itemGroup)
+	}
+
 	//Release
 	ReleasePlayer(player, itemGroup)
 	{
@@ -839,13 +1042,37 @@ Utility.Game.Characters = class
 		{
 			return
 		}
-		CharacterSetFacialExpression(player, assetGroup, expression, timer);
+		CharacterSetFacialExpression(player, assetGroup, expression, timer)
 	}
 	
 	SetFacialExpressionByMNr(memberNumber, assetGroup, expression, timer)
 	{
-		var player = this.GetCharacterByMNr(memberNumber)
-		CharacterSetFacialExpression(player, assetGroup, expression, timer);
+		let player = this.GetCharacterByMNr(memberNumber)
+		this.SetFacialExpression(player, assetGroup, expression, timer)
+	}
+
+	SetPose(player, arms, legs, force)
+	{
+		if(player == null)
+		{
+			return
+		}
+		let poses = [ ]
+		if(arms == null)
+		{
+			poses.push(arms)
+		}
+		if(legs != null)
+		{
+			poses.push(legs)
+		}
+		CharacterSetActivePose(player, legs, force)
+	}
+
+	SetPoseByMNr(memberNumber, arms, legs, force)
+	{
+		let player = this.GetCharacterByMNr(memberNumber)
+		SetPose(player, arms, legs, force)
 	}
 
 	CharacterItemUpdate(player, itemGroup)
@@ -881,6 +1108,16 @@ Utility.Game.Characters = class
 		ServerSend("ChatRoomCharacterItemUpdate", updateData)
 	}
 
+	CharacterItemUpdateSelf(itemGroup)
+	{
+		this.CharacterItemUpdate(Player, itemGroup)
+	}
+
+	CharacterUpdate(player)
+	{
+		ChatRoomCharacterUpdate(player)
+	}
+
 	SetDescription(newDescription)
 	{
 		if(Player.Description != null)
@@ -895,7 +1132,7 @@ Utility.Game.Characters = class
         ChatRoomCharacterUpdate(Player);
 	}
 
-	//EventHandlers
+	//Event Handlers
 	OnHookLoginResponseBefore(characterData)
 	{
 		if (typeof characterData != "object") // If the response does not contains valid character data...
@@ -927,6 +1164,24 @@ Utility.Game.Characters = class
 		}
 
 		this.eventLogin.Raise(this.loginAttributes)
+
+	}
+
+	OnHookCharacterAppearanceSetItemBefore(player, assetGroup, itemAsset, color, difficulty, memberNumber, refresh)
+	{
+		if(player.MemberNumber != this.GetPlayer().MemberNumber)
+		{
+			return;
+		}
+
+		let out = { allowAppearanceChange: true }
+		this.eventAppearanceChange.Raise(itemAsset, assetGroup, difficulty, color, memberNumber, out)
+		
+		if(out.allowAppearanceChange == false)
+		{
+			this.functionCallHooks.CharacterAppearanceSetItem.BlockHookedFunctionOnce()
+			this.CharacterItemUpdate(this.GetPlayer(), assetGroup)
+		}
 
 	}
 
