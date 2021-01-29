@@ -27,7 +27,7 @@ WardrobeUtilities.WardrobeUtilities = class
 	{
 		if(this.storageEntryKey == "")
 		{
-			this.storageEntryKey = "WardrobeUtilities.MemberNumber_" + this.gameCharacters.GetPlayer().MemberNumber + ".EntryPackages"
+			this.storageEntryKey = "BCUtil.MemberNumber_" + this.gameCharacters.GetPlayer().MemberNumber + ".WardrobeUtilities.EntryPackages"
 		}
 		return this.storageEntryKey
 	}
