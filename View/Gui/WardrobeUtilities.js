@@ -2,7 +2,7 @@
 
 if(Gui == undefined)
 {
-	var Gui = class {}
+	var Gui = {}
 }
 
 Gui.WardrobeUtilities = class
