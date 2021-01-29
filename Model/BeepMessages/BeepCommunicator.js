@@ -62,7 +62,7 @@ BeepMessages.BeepCommunicator = class
 		let versionInfo = this.supportedVersions.find(x => x.versionNumber == beepType.version)
 		if(versionInfo == null) // If the message's version is supported...
 		{
-			console.log("Beep Communicator: Received Beep for unsuported version " + beepType.version)
+			//console.log("Beep Communicator: Received Beep for unsuported version " + beepType.version)
 			return;
 		}
 
@@ -101,17 +101,17 @@ BeepMessages.BeepCommunicator = class
 				console.warn("Beep Communicator: Invalid Message Color for Beep Type " + beepType.type + " at version " + versionInfo.versionNumber + ". Default to Black!")
 				beepType.messageColor = "Black";
 			}
-			console.log("Received "+beepType.messageType+" - "+memberName+"("+memberNumber+"): "+beepType.message+" [v-"+beepType.version+"][c-"+beepType.messageColor+"]")
+			//console.log("Received "+beepType.messageType+" - "+memberName+"("+memberNumber+"): "+beepType.message+" [v-"+beepType.version+"][c-"+beepType.messageColor+"]")
 			this.eventReceivedMessage.Raise(memberNumber, memberName, beepType.version, beepType.messageType, beepType.message, beepType.messageColor)
 		}
 		else if(beepType.type == versionInfo.beepTypes.versionRequest) // If it's a version request...
 		{
-			console.log("Received Version Request of "+memberName+"("+memberNumber+")")
+			//console.log("Received Version Request of "+memberName+"("+memberNumber+")")
 			this.SendVersionResponse(memberNumber)
 		}
 		else if(beepType.type == versionInfo.beepTypes.versionResponse) // If it's a version response...
 		{
-			console.log("Received Version Response of "+memberName+"("+memberNumber+")")
+			//console.log("Received Version Response of "+memberName+"("+memberNumber+")")
 			this.eventReceivedVersion.Raise(memberNumber, memberName, beepType.version)
 		}
 		else
@@ -129,7 +129,7 @@ BeepMessages.BeepCommunicator = class
 			version: this.latestVersion.versionNumber,
 			type: this.latestVersion.beepTypes.versionRequest
 		}
-		console.log("Sending version request to "+memberNumber)
+		//console.log("Sending version request to "+memberNumber)
 		this.gameBeeps.SendGenericBeep(memberNumber, beepType)
 	}
 
@@ -140,7 +140,7 @@ BeepMessages.BeepCommunicator = class
 			version: this.latestVersion.versionNumber,
 			type: this.latestVersion.beepTypes.versionResponse
 		}
-		console.log("Sending version response to "+memberNumber)
+		//console.log("Sending version response to "+memberNumber)
 		this.gameBeeps.SendGenericBeep(memberNumber, beepType)
 	}
 
@@ -163,7 +163,7 @@ BeepMessages.BeepCommunicator = class
 			message: message,
 			messageColor: messageColor
 		}
-		console.log("Sending "+messageType+" to "+memberNumber+": "+message+" [c-"+messageColor+"]")
+		//console.log("Sending "+messageType+" to "+memberNumber+": "+message+" [c-"+messageColor+"]")
 		this.gameBeeps.SendGenericBeep(memberNumber, beepType)
 	}
 
