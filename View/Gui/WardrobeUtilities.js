@@ -33,7 +33,7 @@ Gui.WardrobeUtilities = class
 		let _this = this
 
 		this.buttonImport = this.gameUserInterface.AddButton(1070, 25, 90, 40,
-			"Import", "White", "#808080", "", "Import a previously exorted wardrobe",
+			"Import", "White", "#808080", "", "Import a previously exported wardrobe",
 			this.importExportScreens, true, true)
 		this.buttonExport = this.gameUserInterface.AddButton(1070, 75, 90, 40,
 			"Export", "White", "#808080", "", "Export then current wardrobe",
