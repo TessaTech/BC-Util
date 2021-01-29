@@ -57,12 +57,12 @@ Utility.Event = class
 		return found
 	}
 
-	Raise(data1, data2, data3, data4, data5, data6, data7, data8, data9, data10)
+	Raise(...data)
 	{
 		for(var i=0; i<this.handlerList.length; i++)
 		{
 			//console.log("Executing ChatRoomMessageBeforeEvent with id="+ChatRoomMessageBeforeEvent[i].id)
-			this.handlerList[i].handler(data1, data2, data3, data4, data5, data6, data7, data8, data9, data10)
+			this.handlerList[i].handler(...data)
 		}
 	}
 
