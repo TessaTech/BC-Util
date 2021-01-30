@@ -8,6 +8,15 @@ The current version contains the following features:
 - Appearance Overriding
 	- Adds an additional field "Layer" to the top area qhen selecting an clothing piece in the appearance window 
 		- Changing this value allows overriding of the clothing piece's default display layer
+- Direct Chat
+	- Adds a chat function independent of chat rooms which allows having 1 on 1 communications with friends that also have it installed
+	- On most screens a new small chat icon is visible in the bottom left corner
+	- Clicking on this chat icon will open/close the direct chat window
+	- The drop down box on top (reading "None" by default) shows all online friends
+		- Uppon selecting a chat partner, the partner the entry will first become red
+		- If it stays red, it means the desired chat partner does not have this expansion installed
+		- If it becomes green, the desired partner has the expansion installed and is ready to receive chat messages
+	- If a chat message is received while the chat window is closed, the chat iron in the bottom-left corner and the related entry in the partner selection drop down box becomes orange
 
 # Important
 **This extension is currently in beta stage. Please report any bugs you might find**
@@ -26,6 +35,6 @@ The current version contains the following features:
 8. The addon is now installed. You might have to refresh the Bondage Club page if it's already open to load it with the addon
 
 # About
-_BC-Util Version 1.0.0 (Beta)_
+_BC-Util Version 1.1.0 (Beta)_
 
 _Created by Tessa (8863) /TessaTech@github_
