@@ -49,9 +49,9 @@ Gui.DirectChat = class
 
 		//Calculate GUI Element Coodinates
 		let x = 400
-		let y = 100
+		let y = 75
 		let width = 1200
-		let height = 800
+		let height = 725
 
 		let widthPartner = width
 		let widthSend = width - 10
@@ -70,7 +70,7 @@ Gui.DirectChat = class
 		let ySend = yMessages + heightMessages + 3
 
 		//Create GUI Elements
-		this.buttonShowHide = this.gameUserInterface.AddButton(15, 925, 60, 60, "", this.colorButtonDefault, "#808080", "Icons/Small/Chat.png", "Direct Chat", chatScreens, true, true)
+		this.buttonShowHide = this.gameUserInterface.AddButton(15, 915, 60, 60, "", this.colorButtonDefault, "#808080", "Icons/Small/Chat.png", "Direct Chat", chatScreens, true, true)
 
 		this.dropDownPartner = this.gameUserInterface.AddDropDown(xPartner, yPartner, widthPartner, heightPartner, fontSizePartner, [[0, "Blaa"], [1, "BlaBlaa"]], 0, chatScreens, false)
 		this.textAreaMessages = this.gameUserInterface.AddHtmlTextArea(xMessages, yMessages, widthMessages, heightMessages, fontSizeMessages, -1, "", chatScreens, false)
@@ -334,7 +334,7 @@ Gui.DirectChat = class
 	{
 		let retVar = ""
 		let tmpMessage = this.ClearHtmlTags(message)
-		let tmpDate = date.getMonth()+"."+date.getDate()+"."+date.getFullYear()+" "+
+		let tmpDate = (date.getMonth()+1)+"."+date.getDate()+"."+date.getFullYear()+" "+
 			date.getHours()+" "+date.getMinutes()+":"+date.getSeconds()
 		if(messageType == "Message")
 		{
