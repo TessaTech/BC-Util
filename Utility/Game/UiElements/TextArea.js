@@ -107,6 +107,11 @@ Utility.Game.UiElements.TextArea = class
 		this.UpdateText()
 	}
 
+	ScrollToEnd()
+	{
+		ElementScrollToEnd(this.gameTextAreaId)
+	}
+	
 	UpdateText()
 	{
 		ElementValue(this.gameTextAreaId, this.text)

@@ -143,6 +143,11 @@ Utility.Game.UiElements.HtmlTextArea = class
 		}
 	}
 
+	ScrollToEnd()
+	{
+		ElementScrollToEnd(this.gameTextAreaId)
+	}
+
 	UpdateText()
 	{
 		ElementContent(this.gameTextAreaId, this.text)
