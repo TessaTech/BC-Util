@@ -150,7 +150,6 @@ BeepMessages.BeepMessenger = class
 	{
 		let conversation = this.GetConversation(memberNumber)
 
-		conversation.version = version
 		let dateNow = new Date(Date.now())
 		conversation.messageHistory.push(new BeepMessages.BeepConversation.Message(memberNumber, memberName, messageType, message, messageColor, dateNow))
 		this.eventReceivedMessage.Raise(memberNumber, memberName, messageType, message, messageColor, dateNow)
