@@ -113,6 +113,7 @@ Utility.Game.UiElements.HtmlTextArea = class
 				"padding: 0 !important;"
 			this.UpdateText()
 			this.gameTextAreaExists = true
+			this.ScrollToEnd()
 		}
 		ElementPositionFix(this.gameTextAreaId, this.fontSize, this.x, this.y, this.width, this.height)
 		//this.GetText()

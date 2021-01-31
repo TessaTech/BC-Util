@@ -73,7 +73,7 @@ Gui.DirectChat = class
 		this.buttonShowHide = this.gameUserInterface.AddButton(15, 915, 60, 60, "", this.colorButtonDefault, "#808080", "Icons/Small/Chat.png", "Direct Chat", chatScreens, true, true)
 
 		this.dropDownPartner = this.gameUserInterface.AddDropDown(xPartner, yPartner, widthPartner, heightPartner, fontSizePartner, [[0, "Blaa"], [1, "BlaBlaa"]], 0, chatScreens, false)
-		this.textAreaMessages = this.gameUserInterface.AddHtmlTextArea(xMessages, yMessages, widthMessages, heightMessages, fontSizeMessages, -1, "", chatScreens, false)
+		this.textAreaMessages = this.gameUserInterface.AddHtmlTextArea(xMessages, yMessages, widthMessages, heightMessages, fontSizeMessages, -1, "", chatScreens, false, true)
 		this.textFieldSend = this.gameUserInterface.AddTextField(xSend, ySend, widthSend, heightSend, fontSizeSend, 250, "", chatScreens, false)
 		
 		//Register Events
@@ -212,6 +212,7 @@ Gui.DirectChat = class
 				let selectedPartnerMemberNumber = this.lastPartnerEntries[selectedIndex-1].memberNumber
 				this.SelectChatPartner(selectedPartnerMemberNumber)
 			}
+			this.textAreaMessages.ScrollToEnd()
 
 		}
 		else

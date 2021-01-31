@@ -85,7 +85,7 @@ Utility.Game.UserInterface = class
 		return newTextLabel
 	}
 
-	AddTextArea(x, y, width, height, fontSize, maxLength, text, screens, visible)
+	AddTextArea(x, y, width, height, fontSize, maxLength, text, screens, visible, scrollToEndOnShow)
 	{
 		let newGameTextAreaId = "Utility.Game.UserInterface.TextArea_"
 
@@ -98,13 +98,13 @@ Utility.Game.UserInterface = class
 			newGameTextAreaId = "Utility.Game.UserInterface.TextArea_" + this.textAreas.length.toString()
 		}
 
-		let newTextArea = new Utility.Game.UiElements.TextArea(newGameTextAreaId, x, y, width, height, fontSize, maxLength, text, screens, visible)
+		let newTextArea = new Utility.Game.UiElements.TextArea(newGameTextAreaId, x, y, width, height, fontSize, maxLength, text, screens, visible, scrollToEndOnShow)
 		this.textAreas.push(newTextArea)
 
 		return newTextArea
 	}
 
-	AddHtmlTextArea(x, y, width, height, fontSize, maxLength, text, screens, visible)
+	AddHtmlTextArea(x, y, width, height, fontSize, maxLength, text, screens, visible, scrollToEndOnShow)
 	{
 		let newGameTextAreaId = "Utility.Game.UserInterface.TextArea_"
 
@@ -117,7 +117,7 @@ Utility.Game.UserInterface = class
 			newGameTextAreaId = "Utility.Game.UserInterface.TextArea_" + this.textAreas.length.toString()
 		}
 
-		let newTextArea = new Utility.Game.UiElements.HtmlTextArea(newGameTextAreaId, x, y, width, height, fontSize, maxLength, text, screens, visible)
+		let newTextArea = new Utility.Game.UiElements.HtmlTextArea(newGameTextAreaId, x, y, width, height, fontSize, maxLength, text, screens, visible, scrollToEndOnShow)
 		this.textAreas.push(newTextArea)
 
 		return newTextArea

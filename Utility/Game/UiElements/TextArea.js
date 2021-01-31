@@ -29,11 +29,12 @@ Utility.Game.UiElements.TextArea = class
 	// visible = true
 	// unused = false
 
-	constructor(initGameTextAreaId, initX, initY, initWidth, initHeight, initFontSize, initMaxLength, initText, initScreens, initVisible)
+	constructor(initGameTextAreaId, initX, initY, initWidth, initHeight, initFontSize, initMaxLength, initText, initScreens, initVisible, initScrollToEndOnShow)
 	{
 		if(initText == null) { initText = ""; }
 		if(initScreens == null) { initScreens = []; }
 		if(initVisible == null) { initVisible = true; }
+		if(initScrollToEndOnShow == null) { initScrollToEndOnShow = false; }
 
 		this.gameTextAreaId = initGameTextAreaId
 		this.gameTextAreaExists = false
@@ -52,6 +53,8 @@ Utility.Game.UiElements.TextArea = class
 		
 		this.eventTextChanged = new Utility.Event()
 		this.lastText = this.text
+
+		this.scrollToEndOnShow = initScrollToEndOnShow
 
 	}
 	
@@ -84,6 +87,10 @@ Utility.Game.UiElements.TextArea = class
 			ElementCreateTextArea(this.gameTextAreaId)
 			this.UpdateText()
 			this.gameTextAreaExists = true
+			if(this.scrollToEndOnShow == true)
+			{
+				this.ScrollToEnd()
+			}
 		}
 		ElementPositionFix(this.gameTextAreaId, this.fontSize, this.x, this.y, this.width, this.height)
 		this.GetText()
