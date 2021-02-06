@@ -51,7 +51,9 @@ Utility.Game.UiElements.TextArea = class
 		this.visible = initVisible
 		this.unused = false
 		
+		this.keyDown = false
 		this.eventTextChanged = new Utility.Event()
+		this.eventAccepted = new Utility.Event()
 		this.lastText = this.text
 
 		this.scrollToEndOnShow = initScrollToEndOnShow
@@ -87,6 +89,24 @@ Utility.Game.UiElements.TextArea = class
 			ElementCreateTextArea(this.gameTextAreaId)
 			this.UpdateText()
 			this.gameTextAreaExists = true
+
+			let _this = this
+			let element = document.getElementById(this.gameTextAreaId)
+			element.addEventListener("keydown", function(eventData)
+				{
+					if(_this.keyDown == true) { return; }
+					_this.keyDown = true
+	
+					_this.OnElementKeyDown(eventData.key)
+				});
+			element.addEventListener("keyup", function(eventData)
+				{
+					if(_this.keyDown == false) { return; }
+					_this.keyDown = false
+					
+					_this.OnElementKeyUp(eventData.key)
+				});
+
 			if(this.scrollToEndOnShow == true)
 			{
 				this.ScrollToEnd()
@@ -139,6 +159,21 @@ Utility.Game.UiElements.TextArea = class
 		this.eventTextChanged.Raise(newText)
 	}
 
+	RegisterEventAccepted(eventHandler)
+	{
+		return this.eventAccepted.Register(eventHandler)
+	}
+
+	UnregisterEventAccepted(eventId)
+	{
+		return this.eventAccepted.Unregister(eventId)
+	}
+
+	RaiseEventAccepted(newText)
+	{
+		this.eventAccepted.Raise(newText)
+	}
+
 	Show()
 	{
 		this.visible = true
@@ -152,6 +187,20 @@ Utility.Game.UiElements.TextArea = class
 	MarkUnused()
 	{
 		this.unused = true
+	}
+
+	OnElementKeyDown(key)
+	{
+		if (key == "Enter") // If enter was pressed...
+		{
+			this.RaiseEventAccepted(this.GetText())
+		}
+		this.GetText()
+	}
+
+	OnElementKeyUp(key)
+	{
+		this.GetText()
 	}
 
 }
