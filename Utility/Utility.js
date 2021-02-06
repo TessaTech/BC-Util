@@ -67,7 +67,7 @@ Utility.Utility = class
 	
 	static ShuffleArray(array)
 	{
-		var retVar = []
+		let retVar = []
 		if(array === null || Array.isArray(array) === false || array.length <= 0)
 		{
 			return []
@@ -84,7 +84,7 @@ Utility.Utility = class
 	
 	static GetTime()
 	{
-		var d = new Date()
+		let d = new Date()
 		return d.getTime()
 	}
 
