@@ -212,7 +212,6 @@ Gui.DirectChat = class
 				let selectedPartnerMemberNumber = this.lastPartnerEntries[selectedIndex-1].memberNumber
 				this.SelectChatPartner(selectedPartnerMemberNumber)
 			}
-			this.textAreaMessages.ScrollToEnd()
 
 		}
 		else
@@ -335,8 +334,12 @@ Gui.DirectChat = class
 	{
 		let retVar = ""
 		let tmpMessage = this.ClearHtmlTags(message)
-		let tmpDate = (date.getMonth()+1)+"."+date.getDate()+"."+date.getFullYear()+" "+
-			date.getHours()+" "+date.getMinutes()+":"+date.getSeconds()
+		let tmpDate = (date.getMonth()+1).zeroPadding(2)+"."+
+						date.getDate().zeroPadding(2)+"."+
+						date.getFullYear().zeroPadding(4)+" "+
+			date.getHours().zeroPadding(2)+" "+
+			date.getMinutes().zeroPadding(2)+":"+
+			date.getSeconds().zeroPadding(2)
 		if(messageType == "Message")
 		{
 			retVar =	"<div class=\"ChatMessage ChatMessageChat\" data-time=\""+tmpDate+"\" data-sender=\""+senderNumber+"\">"+"\n"+
