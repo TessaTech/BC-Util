@@ -15,12 +15,13 @@ if(Utility.Game.UiElements == undefined)
 
 Utility.Game.UiElements.HtmlTextArea = class
 {
-	constructor(initGameTextAreaId, initX, initY, initWidth, initHeight, initFontSize, initMaxLength, initText, initScreens, initVisible)
+	constructor(initGameTextAreaId, initX, initY, initWidth, initHeight, initFontSize, initMaxLength, initText, initScreens, initVisible, initScrollToEndOnShow)
 	{
 		if(initText == null) { initText = ""; }
 		if(initScreens == null) { initScreens = []; }
 		if(initVisible == null) { initVisible = true; }
-
+		if(initScrollToEndOnShow == null) { initScrollToEndOnShow = false; }
+		
 		this.gameTextAreaId = initGameTextAreaId
 		this.gameTextAreaExists = false
 
@@ -36,6 +37,7 @@ Utility.Game.UiElements.HtmlTextArea = class
 		this.visible = initVisible
 		this.unused = false
 		
+		this.scrollToEndOnShow = initScrollToEndOnShow
 		//this.eventTextChanged = new Utility.Event()
 
 	}
@@ -113,7 +115,10 @@ Utility.Game.UiElements.HtmlTextArea = class
 				"padding: 0 !important;"
 			this.UpdateText()
 			this.gameTextAreaExists = true
-			this.ScrollToEnd()
+			if(this.scrollToEndOnShow == true)
+			{
+				this.ScrollToEnd()
+			}
 		}
 		ElementPositionFix(this.gameTextAreaId, this.fontSize, this.x, this.y, this.width, this.height)
 		//this.GetText()
