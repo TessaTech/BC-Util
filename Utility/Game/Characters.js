@@ -872,7 +872,7 @@ Utility.Game.Characters = class
 	
 	GetLockPasswordSelf(itemGroup)
 	{
-		return this.GetLockPassword(Character[0], itemGroup)
+		return this.GetLockPassword(this.GetPlayer(), itemGroup)
 	}
 	
 	GetLockPasswordByMNr(memberNumber, itemGroup)
@@ -882,6 +882,83 @@ Utility.Game.Characters = class
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		
 		return this.GetLockPassword(bufPlayer, itemGroup)
+	}
+
+	GetLockKeyList(player, itemGroup)
+	{
+		let lockedItem = null
+	
+		lockedItem = player.Appearance.find(x => (x.Asset.Group.Name === itemGroup))
+		if(lockedItem == null)
+		{
+			console.log("Failed: Lock not found")
+			return ""
+		}
+		if(lockedItem.Property.LockedBy != "HighSecurityPadlock")
+		{
+			console.log("Failed: Lock not a high security padlock")
+			return ""
+		}
+		return lockedItem.Property.MemberNumberList.split(",")
+	}
+
+	GetLockKeyListSelf(itemGroup)
+	{
+		return this.GetLockKeyList(this.GetPlayer(), itemGroup)
+	}
+	
+	GetLockKeyListByMNr(memberNumber, itemGroup)
+	{
+		var bufPlayer = null
+	
+		bufPlayer = this.GetCharacterByMNr(memberNumber)
+		
+		return this.GetLockKeyList(bufPlayer, itemGroup)
+	}
+
+	SetLockKeyList(player, itemGroup, newKeyList)
+	{
+		let lockedItem = null
+	
+		lockedItem = player.Appearance.find(x => (x.Asset.Group.Name === itemGroup))
+		if(lockedItem == null)
+		{
+			console.log("Failed: Lock not found")
+			return ""
+		}
+		if(lockedItem.Property.LockedBy != "HighSecurityPadlock")
+		{
+			console.log("Failed: Lock not a high security padlock")
+			return ""
+		}
+		if(Array.isArray(newKeyList))
+		{
+			let newList = ""
+			for(let i=0; i<newKeyList.length; i++)
+			{
+				if(typeof newKeyList[i] != "string")
+				{
+					newKeyList[i] = newKeyList[i].toString()
+				}
+				if(i > 0){ newList += ","}
+				newList += newKeyList[i]
+			}
+		}
+		lockedItem.Property.MemberNumberList = newList
+	}
+
+	SetLockKeyListSelf(itemGroup, newKeyList)
+	{
+		this.SetLockKeyList(this.GetPlayer(), itemGroup, newKeyList)
+	}
+	
+	SetLockKeyListByMNr(memberNumber, itemGroup, newKeyList)
+	{
+		var bufPlayer = null
+	
+		bufPlayer = this.GetCharacterByMNr(memberNumber)
+		
+		this.SetLockKeyList(bufPlayer, itemGroup, newKeyList)
 	}
 
 	//Release
@@ -894,7 +971,7 @@ Utility.Game.Characters = class
 	
 	ReleaseSelf(itemGroup)
 	{
-		this.ReleasePlayer(Character[0], itemGroup)
+		this.ReleasePlayer(this.GetPlayer(), itemGroup)
 	}
 	
 	ReleasePlayerByMNr(memberNumber, itemGroup)
@@ -948,9 +1025,9 @@ Utility.Game.Characters = class
 		
 	}
 	
-	Safeword()
+	Safeword(withNeck, withBreasts, withPelvis)
 	{	
-		this.ReleasePlayerFull(Player, false, false, false)
+		this.ReleasePlayerFull(Player, withNeck, withBreasts, withPelvis)
 		
 	}
 	
@@ -1066,7 +1143,8 @@ Utility.Game.Characters = class
 		{
 			poses.push(legs)
 		}
-		CharacterSetActivePose(player, legs, force)
+		CharacterSetActivePose(player, poses, force)
+		ServerSend("ChatRoomCharacterPoseUpdate", { Pose: Player.ActivePose })
 	}
 
 	SetPoseByMNr(memberNumber, arms, legs, force)
