@@ -49,32 +49,33 @@ Gui.DirectChat = class
 
 		//Calculate GUI Element Coodinates
 		let x = 400
-		let y = 75
+		let y = 70
 		let width = 1200
 		let height = 725
 
 		let widthPartner = width
-		let widthSend = width - 10
+		let widthSend = width - 5
 		let widthMessages = width
 
 		let heightPartner = 29
-		let heightSend = 40
+		let heightSend = 60
 		let heightMessages = height - heightSend - heightPartner
 
 		let xPartner = x
 		let xMessages = x
-		let xSend = x + 2
+		let xSend = x
 
 		let yPartner = y
 		let yMessages = yPartner + heightPartner
-		let ySend = yMessages + heightMessages + 3
+		let ySend = yMessages + heightMessages + 1
 
 		//Create GUI Elements
 		this.buttonShowHide = this.gameUserInterface.AddButton(15, 915, 60, 60, "", this.colorButtonDefault, "#808080", "Icons/Small/Chat.png", "Direct Chat", chatScreens, true, true)
 
 		this.dropDownPartner = this.gameUserInterface.AddDropDown(xPartner, yPartner, widthPartner, heightPartner, fontSizePartner, [[0, "Blaa"], [1, "BlaBlaa"]], 0, chatScreens, false)
 		this.textAreaMessages = this.gameUserInterface.AddHtmlTextArea(xMessages, yMessages, widthMessages, heightMessages, fontSizeMessages, -1, "", chatScreens, false, true)
-		this.textFieldSend = this.gameUserInterface.AddTextField(xSend, ySend, widthSend, heightSend, fontSizeSend, 250, "", chatScreens, false)
+		//this.textFieldSend = this.gameUserInterface.AddTextField(xSend, ySend, widthSend, heightSend, fontSizeSend, 1000, "", chatScreens, false)
+		this.textFieldSend = this.gameUserInterface.AddTextArea(xSend, ySend, widthSend, heightSend, fontSizeSend, 1000, "", chatScreens, false)
 		
 		//Register Events
 		let _this = this
