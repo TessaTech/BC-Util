@@ -35,6 +35,6 @@ The current version contains the following features:
 8. The addon is now installed. You might have to refresh the Bondage Club page if it's already open to load it with the addon
 
 # About
-_BC-Util Version 1.1.0 (Beta)_
+_BC-Util Version 1.1.1_
 
 _Created by Tessa (8863) /TessaTech@github_
