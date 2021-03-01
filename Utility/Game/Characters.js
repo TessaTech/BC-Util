@@ -360,10 +360,7 @@ Utility.Game.Characters = class
 		}
 
 		item.Property[propertyName] = propertyValue
-		if (CurrentScreen == "ChatRoom")
-		{
-			this.CharacterItemUpdate(player, itemGroup)
-		}
+		this.CharacterItemUpdate(player, itemGroup)
 
 	}
 
@@ -427,16 +424,13 @@ Utility.Game.Characters = class
 		else if (difficulty > 100) { difficulty = 100; }
 		console.log(item)
 		item.Difficulty = item.Asset.Difficulty + difficulty;
-		if (CurrentScreen == "ChatRoom")
-		{
-			this.CharacterItemUpdate(player, itemGroup)
-		}
+		this.CharacterItemUpdate(player, itemGroup)
 		
 	}
 	
 	ChangeDifficultyByMNr(memberNumber, itemGroup, difficulty)
 	{
-		var bufPlayer = null
+		let bufPlayer = null
 	
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		this.ChangeDifficulty(bufPlayer, itemGroup, difficulty)
@@ -456,7 +450,7 @@ Utility.Game.Characters = class
 	
 	GetItemByMNr(memberNumber, itemGroup)
 	{
-		var bufPlayer = null
+		let bufPlayer = null
 	
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		return this.GetItem(bufPlayer, itemGroup)
@@ -472,7 +466,7 @@ Utility.Game.Characters = class
 		return this.GetLockByItem(this.GetItem(player, itemGroup))
 	}
 	
-	GetLockSelf(player, itemGroup)
+	GetLockSelf(itemGroup)
 	{
 		return this.GetLockByItem(this.GetItemSelf(itemGroup))
 	}
@@ -494,7 +488,7 @@ Utility.Game.Characters = class
 	
 	IsTiedByMNr(memberNumber, itemGroup)
 	{
-		var bufPlayer = null
+		let bufPlayer = null
 	
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		
@@ -513,7 +507,7 @@ Utility.Game.Characters = class
 	
 	IsLockedByMNr(memberNumber, itemGroup)
 	{
-		var bufPlayer = null
+		let bufPlayer = null
 	
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		
@@ -568,9 +562,8 @@ Utility.Game.Characters = class
 	IsBlockedByOtherItem(player, itemGroup)
 	{
 		// Items can block each other (hoods blocks gags, belts blocks eggs, etc.)
-		var i=0
-		var bufAppearance = null
-		for (i = 0; i < player.Appearance.length; i++)
+		let bufAppearance = null
+		for (let i = 0; i < player.Appearance.length; i++)
 		{
 			bufAppearance = player.Appearance[i]
 			if (bufAppearance.Asset.Group.Clothing != null && (bufAppearance.Asset.Block != null) && (bufAppearance.Asset.Block.includes(itemGroup) == true))
@@ -607,10 +600,7 @@ Utility.Game.Characters = class
 		}
 		
 		InventoryLock(player, itemGroup, lock, lockMemberNumber)
-		if (CurrentScreen == "ChatRoom")
-		{
-			this.CharacterItemUpdate(player, itemGroup)
-		}
+		this.CharacterItemUpdate(player, itemGroup)
 	}
 	
 	LockSelf(itemGroup, lock, lockMemberNumber) // lockMemberNumber = null // Is Default when not used
@@ -620,7 +610,7 @@ Utility.Game.Characters = class
 	
 	LockPlayerByMNr(memberNumber, itemGroup, lock, lockMemberNumber) // lockMemberNumber = null // Is Default when not used
 	{
-		var bufPlayer = null
+		let bufPlayer = null
 	
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		this.LockPlayer(bufPlayer, itemGroup, lock, lockMemberNumber)
@@ -629,7 +619,7 @@ Utility.Game.Characters = class
 	//Combination Lock
 	ChangeLockCombination(player, itemGroup, oldCombination, newCombination, silent)
 	{
-		var lockedItem = null
+		let lockedItem = null
 
 		if(silent == null) { silent = true; }
 	
@@ -707,7 +697,7 @@ Utility.Game.Characters = class
 	
 	ChangeLockCombinationByMNr(memberNumber, itemGroup, oldCombination, newCombination)
 	{
-		var bufPlayer = null
+		let bufPlayer = null
 	
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		
@@ -739,7 +729,7 @@ Utility.Game.Characters = class
 	
 	GetLockCombinationByMNr(memberNumber, itemGroup)
 	{
-		var bufPlayer = null
+		let bufPlayer = null
 	
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		
@@ -748,16 +738,16 @@ Utility.Game.Characters = class
 	
 	RandomizeLockCombination(a_Player, itemGroup, a_OldCombination, a_NoReturn)
 	{
-		var newCombination = null
+		let newCombination = null
 	
-		newCombindation = this.GetRandomNumber(0, 9999).zeroPadding(4)
+		newCombination = this.GetRandomNumber(0, 9999).zeroPadding(4)
 		this.ChangeLockCombination(a_Player, itemGroup, a_OldCombination, newCombindation)
 		
-		if(a_NoReturn === true)
+		if(a_NoReturn == true)
 		{
 			return ""
 		}
-		return newCombindation
+		return newCombination
 	}
 	
 	RandomizeLockCombinationSelf(itemGroup, a_OldCombination, a_NoReturn)
@@ -767,7 +757,7 @@ Utility.Game.Characters = class
 	
 	RandomizeLockCombinationByMNr(memberNumber, itemGroup, a_OldCombination, a_NoReturn)
 	{
-		var bufPlayer = null
+		let bufPlayer = null
 	
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		
@@ -777,7 +767,7 @@ Utility.Game.Characters = class
 	//Combination Lock
 	ChangeLockPassword(player, itemGroup, oldPassword, newPassword, newHint, silent)
 	{
-		var lockedItem = null
+		let lockedItem = null
 
 		newPassword = newPassword.toUpperCase()
 
@@ -845,7 +835,7 @@ Utility.Game.Characters = class
 	
 	ChangeLockPasswordByMNr(memberNumber, itemGroup, oldPassword, newPassword, newHint, silent)
 	{
-		var bufPlayer = null
+		let bufPlayer = null
 	
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		
@@ -877,7 +867,7 @@ Utility.Game.Characters = class
 	
 	GetLockPasswordByMNr(memberNumber, itemGroup)
 	{
-		var bufPlayer = null
+		let bufPlayer = null
 	
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		
@@ -899,7 +889,7 @@ Utility.Game.Characters = class
 			console.log("Failed: Lock not a high security padlock")
 			return ""
 		}
-		return lockedItem.Property.MemberNumberList.split(",")
+		return lockedItem.Property.MemberNumberListKeys.split(",")
 	}
 
 	GetLockKeyListSelf(itemGroup)
@@ -909,7 +899,7 @@ Utility.Game.Characters = class
 	
 	GetLockKeyListByMNr(memberNumber, itemGroup)
 	{
-		var bufPlayer = null
+		let bufPlayer = null
 	
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		
@@ -924,27 +914,32 @@ Utility.Game.Characters = class
 		if(lockedItem == null)
 		{
 			console.log("Failed: Lock not found")
-			return ""
+			return;
 		}
 		if(lockedItem.Property.LockedBy != "HighSecurityPadlock")
 		{
 			console.log("Failed: Lock not a high security padlock")
-			return ""
+			return;
 		}
-		if(Array.isArray(newKeyList))
+		if(Array.isArray(newKeyList) == false)
 		{
-			let newList = ""
-			for(let i=0; i<newKeyList.length; i++)
+			return;
+		}
+
+		let newList = ""
+		for(let i=0; i<newKeyList.length; i++)
+		{
+			if(typeof newKeyList[i] != "string")
 			{
-				if(typeof newKeyList[i] != "string")
-				{
-					newKeyList[i] = newKeyList[i].toString()
-				}
-				if(i > 0){ newList += ","}
+				newKeyList[i] = newKeyList[i].toString()
+			}
+			if(newKeyList[i] != "")
+			{
+				if(newList != ""){ newList += ","}
 				newList += newKeyList[i]
 			}
 		}
-		lockedItem.Property.MemberNumberList = newList
+		lockedItem.Property.MemberNumberListKeys = newList
 	}
 
 	SetLockKeyListSelf(itemGroup, newKeyList)
@@ -954,19 +949,73 @@ Utility.Game.Characters = class
 	
 	SetLockKeyListByMNr(memberNumber, itemGroup, newKeyList)
 	{
-		var bufPlayer = null
+		let bufPlayer = null
 	
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		
 		this.SetLockKeyList(bufPlayer, itemGroup, newKeyList)
 	}
 
+	AddToLockKeyList(player, itemGroup, newKey)
+	{
+		let keyList = this.GetLockKeyList(player, itemGroup)
+		if(keyList == null || Array.isArray(keyList) == false || keyList.includes(newKey) == true)
+		{
+			return;
+		}
+		keyList.push(newKey)
+		this.SetLockKeyList(player, itemGroup, keyList)
+	}
+
+	AddToLockKeyListSelf(itemGroup, newKey)
+	{
+		this.AddToLockKeyList(this.GetPlayer(), itemGroup, newKey)
+	}
+
+	AddToLockKeyListByMnr(memberNumber, itemGroup, newKey)
+	{
+		let bufPlayer = null
+	
+		bufPlayer = this.GetCharacterByMNr(memberNumber)
+		
+		this.AddToLockKeyList(bufPlayer, itemGroup, newKey)
+	}
+
+	RemoveFromLockKeyList(player, itemGroup, keyToRemove)
+	{
+		let keyList = this.GetLockKeyList(player, itemGroup)
+		if(keyList == null || Array.isArray(keyList) == false)
+		{
+			return;
+		}
+		let index = keyList.findIndex(x => x == keyToRemove)
+		if(index < 0)
+		{
+			return;
+		}
+		keyList.splice(index, 1)
+		this.SetLockKeyList(player, itemGroup, keyList)
+	}
+
+	RemoveFromLockKeyListSelf(itemGroup, keyToRemove)
+	{
+		this.RemoveFromLockKeyList(this.GetPlayer(), itemGroup, keyToRemove)
+	}
+
+	RemoveFromLockKeyListByMnr(memberNumber, itemGroup, keyToRemove)
+	{
+		let bufPlayer = null
+	
+		bufPlayer = this.GetCharacterByMNr(memberNumber)
+		
+		this.RemoveFromLockKeyList(bufPlayer, itemGroup, keyToRemove)
+	}
+
 	//Release
 	ReleasePlayer(player, itemGroup)
 	{
-		InventoryRemove(player, itemGroup)
+		InventoryRemove(player, itemGroup, true)
 		this.CharacterItemUpdate(player, itemGroup)
-	
 	}
 	
 	ReleaseSelf(itemGroup)
@@ -976,7 +1025,7 @@ Utility.Game.Characters = class
 	
 	ReleasePlayerByMNr(memberNumber, itemGroup)
 	{
-		var bufPlayer = null
+		let bufPlayer = null
 	
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		
@@ -1017,7 +1066,7 @@ Utility.Game.Characters = class
 	
 	ReleasePlayerFullByMNr(memberNumber, withNeck, withBreasts, withPelvis)
 	{	
-		var bufPlayer = null
+		let bufPlayer = null
 	
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		
@@ -1045,7 +1094,7 @@ Utility.Game.Characters = class
 	
 	UnlockPlayerByMNr(memberNumber, itemGroup)
 	{
-		var bufPlayer = null
+		let bufPlayer = null
 	
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		
@@ -1055,7 +1104,7 @@ Utility.Game.Characters = class
 	//Arousal
 	ChangeArousal(player, difference)
 	{
-		var newArousal = 0
+		let newArousal = 0
 		
 		newArousal = player.ArousalSettings.Progress + difference
 		if(newArousal < 0) { newArousal = 0; }
@@ -1072,7 +1121,7 @@ Utility.Game.Characters = class
 	
 	ChangeArousalByMNr(memberNumber, difference)
 	{
-		var bufPlayer = null
+		let bufPlayer = null
 	
 		bufPlayer = this.GetCharacterByMNr(memberNumber)
 		
@@ -1082,7 +1131,7 @@ Utility.Game.Characters = class
 	//Skill Modifier
 	ChangeSkillModifier(modifierLevel)
 	{
-		var newSkillModifier = 0
+		let newSkillModifier = 0
 		
 		newSkillModifier = LogValue("ModifierLevel", "SkillModifier");
 		newSkillModifier = newSkillModifier + modifierLevel
@@ -1101,8 +1150,8 @@ Utility.Game.Characters = class
 	//Reputation
 	ChangeReputation(reputationType, reputationChange)
 	{
-		var reputation = null
-		var newReputation = 0
+		let reputation = null
+		let newReputation = 0
 		
 		reputation = Player.Reputation.find(x => (x.Type === reputationType))
 		
@@ -1157,7 +1206,7 @@ Utility.Game.Characters = class
 	{
 		if ((CurrentScreen != "ChatRoom") || (itemGroup == null))
 		{
-			return
+			return;
 		}
 		
 		let updateData = {};
