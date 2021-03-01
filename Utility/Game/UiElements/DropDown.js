@@ -16,7 +16,7 @@ if(Utility.Game.UiElements == undefined)
 //ElementCreateInput
 Utility.Game.UiElements.DropDown = class
 {
-	constructor(initGameTextInputId, initX, initY, initWidth, initHeight, initFontSize, initObjects, initSelectedObjectId, initScreens, initVisible)
+	constructor(initGameTextInputId, initX, initY, initWidth, initHeight, initColumnCount, initFontSize, initObjects, initSelectedObjectId, initScreens, initVisible)
 	{
 		if(initObjects == null) { initObjects = []; }
 		if(initScreens == null) { initScreens = []; }
@@ -29,6 +29,7 @@ Utility.Game.UiElements.DropDown = class
 		this.y = initY
 		this.width = initWidth
 		this.height = initHeight
+		this.columnCount = initColumnCount
 		this.fontSize = initFontSize
 		
 		this.objects = []
@@ -56,149 +57,14 @@ Utility.Game.UiElements.DropDown = class
 		return (this.screens.length == 0 || this.screens.includes(currentScreen) == true)
 	}
 
-	// ElementCreateDropdown(elementId, elementOptions, clickEventListener)
-	// {
-	// 	if (document.getElementById(elementId) == null) {
-	// 		// Create the all enclosing <div>
-	// 		let dropDownDiv = document.createElement("DIV")
-	// 		dropDownDiv.style =	"position: relative;"+
-	// 							"font-family: Arial, sans-serif;"+
-	// 							"display: none;"+
-	// 							"color: black;"+
-	// 							"padding: 0.2em;"+
-	// 							"cursor: pointer;"+
-	// 							"user-select: none;"
-	// 		dropDownDiv.setAttribute("ID", elementId)
-	// 		// Create the <select> tag
-	// 		let dropDownSelect = document.createElement("select")
-	// 		dropDownSelect.style = "display: none;"
-	// 		dropDownSelect.setAttribute("Name", elementId + "-select")
-	// 		dropDownSelect.setAttribute("ID", elementId + "-select")
-	// 		// Create the <div> for the options
-	// 		let dropDownDivOptions = document.createElement("DIV")
-	// 		dropDownDivOptions.style =	"position: absolute;"+
-	// 									"background-color: white;"+
-	// 									"top: 100%;"+
-	// 									"left: 0;"+
-	// 									"right: 0;"+
-	// 									"z-index: 99;"+
-	// 									"display: none;"+
-	// 									"color: black;"+
-	// 									"padding: 0.2em;"+
-	// 									"cursor: pointer;"+
-	// 									"user-select: none;"+
-	// 									"position: absolute;"+
-	// 									"background-color: white;"+
-	// 									"top: 100%;"+
-	// 									"left: 0;"+
-	// 									"right: 0;"+
-	// 									"z-index: 99;"+
-	// 									"display: none;"
-	// 		// Create <option> and inner <div> tags for all Options in the list
-	// 		let tmpOption = null
-	// 		let tmpInnerDiv = null
-	// 		for (let i = 0; i < elementOptions.length; i++)
-	// 		{
-	// 			tmpOption = document.createElement("option");
-	// 			tmpInnerDiv = document.createElement("DIV");
-	
-	// 			tmpOption.setAttribute("value", elementOptions[i]);
-	// 			tmpOption.innerHTML = elementOptions[i];
-	// 			tmpInnerDiv.innerHTML = elementOptions[i];
-	// 			tmpInnerDiv.addEventListener("click", function (e)
-	// 				{
-	// 					// when an item is clicked, update the original select box, and the selected item:
-	// 					let relatedSelect = this.parentNode.parentNode.getElementsByTagName("select")[0]; // Representation of the select tag
-	// 					let relatedDropDown = this.parentNode.previousSibling; // Representation of the dropdown box
-	// 					for (let j = 0; j < s.length; j++) {
-	// 						if (relatedSelect.options[j].innerHTML == this.innerHTML) {
-	// 							relatedSelect.selectedIndex = j; // Fake the selection of an option
-	// 							relatedDropDown.innerHTML = this.innerHTML; // Update the drop down box
-	// 							let y = this.parentNode.getElementsByClassName("same-as-selected");
-	// 							for (let k = 0; k < y.length; k++) {
-	// 								y[k].removeAttribute("class");
-	// 							}
-	// 							this.setAttribute("class", "same-as-selected");
-	// 							break;
-	// 						}
-	// 					}
-	// 					relatedDropDown.click(); // Evove a click events
-	// 					relatedSelect.dispatchEvent(new Event("change")); // Evoke a onChange events
-	// 				});
-	// 			dropDownSelect.appendChild(tmpOption);
-	// 			dropDownDivOptions.appendChild(tmpInnerDiv);
-	// 		}
-	// 		// Cretae the div for the selected item
-	// 		let selectedItem = document.createElement("DIV");
-	// 		selectedItem.style =	"background-color: white;"+
-	// 								"color: black;"+
-	// 								"background-image: url('../Icons/Dropdown.png');"+
-	// 								"background-repeat: no-repeat, repeat;"+
-	// 								"background-position: right .7em top 50%, 0 0;"+
-	// 								"background-size: .65em auto, 100%;"+
-	// 								"color: black;"+
-	// 								"padding: 0.2em;"+
-	// 								"cursor: pointer;"+
-	// 								"user-select: none;"
-	// 		selectedItem.innerHTML = dropDownSelect.options[0].innerHTML;
-	// 		selectedItem.addEventListener("click", function (e) {
-	// 			//when the select box is clicked, close any other select boxes, and open/close the current select box:
-	// 			e.stopPropagation();
-	// 			ElementCloseAllSelect(this);
-	// 			this.nextSibling.classList.toggle("select-hide");
-	// 		});
-	// 		// add an event listener to the <select> tag
-	// 		if (clickEventListener != null)
-	// 		{
-	// 			dropDownSelect.addEventListener("change", clickEventListener)
-	// 		}
-	// 		// Add alle the items to the enclosing <di>
-	// 		dropDownDiv.appendChild(dropDownSelect);
-	// 		dropDownDiv.appendChild(selectedItem);
-	// 		dropDownDiv.appendChild(dropDownDivOptions);
-	// 		document.body.appendChild(dropDownDiv);
-	// 		document.addEventListener("click", ElementCloseAllSelect);
-	// 	}
-	// }
-
-	// ElementCreateDropdown(elementId, elementOptions, clickEventListener)
-	// {
-	// 	if (document.getElementById(elementId) != null)
-	// 	{
-	// 		return;
-	// 	}
-
-	// 	// Create the <select> tag
-	// 	let dropDown = document.createElement("select")
-	// 	dropDown.style = ""
-	// 	dropDown.setAttribute("Name", elementId)
-	// 	dropDown.setAttribute("ID", elementId)
-	// 	// Create <option> and inner <div> tags for all Options in the list
-	// 	let tmpOption = null
-	// 	for (let i = 0; i < elementOptions.length; i++)
-	// 	{
-	// 		tmpOption = document.createElement("option");
-	// 		tmpOption.innerHTML = elementOptions[i]
-	// 		dropDown.appendChild(tmpOption);
-	// 	}
-	// 	// add an event listener to the <select> tag
-	// 	if (clickEventListener != null)
-	// 	{
-	// 		dropDown.addEventListener("change", function(eventData){ clickEventListener(eventData); })
-	// 	}
-		
-	// 	document.body.appendChild(dropDown);
-		
-	// }
-
 	ElementCreateDropdown(elementId, elementOptions, clickEventListener)
 	{
 		let dropDown = document.createElement("div")
 		let dropDownSelection = document.createElement("span")
 		let dropDownList = document.createElement("ul")
 		
-		dropDown.setAttribute("Name", elementId);
-		dropDown.setAttribute("ID", elementId);
+		dropDown.setAttribute("Name", elementId)
+		dropDown.setAttribute("ID", elementId)
 
 		dropDown.style =	"position: absolute;"+
 							"display: inline-block;"+
@@ -211,7 +77,7 @@ Utility.Game.UiElements.DropDown = class
 							"cursor: pointer;"+
 							"padding: 0px;"+
 							"border: 1px solid #000000;"+
-							"margin: 0px;"
+							"margin: 0px;";
 
 		dropDownSelection.style =	"position: relative;"+
 									"display: block;"+
@@ -228,7 +94,7 @@ Utility.Game.UiElements.DropDown = class
 									"border: 0px none;"+
 									"border-bottom: 1px solid #000000;"+
 									"margin: 0px;"+
-									"cursor: pointer;"
+									"cursor: pointer;";
 
 		dropDownList.style =	"position: relative;"+
 								"display: none;"+
@@ -240,16 +106,32 @@ Utility.Game.UiElements.DropDown = class
 								"border: 0px none;"+
 								"margin: 0px;"+
 								"overflow-x: auto;"+
-								"overflow-y: auto;"
+								"overflow-y: auto;";
 
 		let dropDownListElementStyle =	"position: relative;"+
 										"display: block;"+
 										"height: auto;"+
+										"width: 100%"
 										"padding: 0px;"+
 										"border: 0px;"+
 										"margin: 0px;"+
 										"cursor: pointer;"
+
+		let dropDownLineEntryStyle =	"position: relative;"+
+										"float: top;"+
+										"height: auto;"+
+										"width: 100%;"+
+										"padding: 0px;"+
+										"border: 0px;"+
+										"margin: 0px;";
 		
+		let dropDownColumnEntryStyle =	"position: relative;"+
+										"float: left;"+
+										"height: auto;"+
+										"width: "+(100/this.columnCount)+"%;"+
+										"padding: 0px;"+
+										"border: 0px;"+
+										"margin: 0px;";
 
 
 		if(this.selection < elementOptions.length)
@@ -261,28 +143,81 @@ Utility.Game.UiElements.DropDown = class
 			dropDownSelection.innerHTML = "<br/>"
 		}
 
-		let tmlListElement = null
-		for (let i = 0; i < elementOptions.length; i++)
+		let lineCount = Math.trunc(elementOptions.length / this.columnCount)
+		if(elementOptions.length % this.columnCount > 0)
 		{
-			tmlListElement = document.createElement("li");
-
-			tmlListElement.style = dropDownListElementStyle
-
-			tmlListElement.innerHTML = elementOptions[i]
-
-			let _elementIndex = i
-			let _elementValue = tmlListElement
-			tmlListElement.addEventListener("click", function(e)
-			{
-				e.stopPropagation()
-				dropDownSelection.innerHTML = _elementValue.innerHTML
-				dropDownList.style.display = "none"
-				clickEventListener(_elementIndex)
-			
-			})
-
-			dropDownList.appendChild(tmlListElement);
+			lineCount++;
 		}
+		let tmlLineElement = null
+		let tmlColumnElement = null
+
+		for (let iLine = 0; iLine < lineCount; iLine++)
+		{
+			tmlLineElement = document.createElement("div")
+			tmlLineElement.style = dropDownLineEntryStyle
+
+			let elementOffset = iLine * this.columnCount
+			for(let iColumn=0; iColumn < this.columnCount; iColumn++)
+			{
+				if(elementOffset + iColumn >= elementOptions.length)
+				{
+					break;
+				}
+				tmlColumnElement = document.createElement("div")
+				tmlColumnElement.style = dropDownColumnEntryStyle
+
+				tmlColumnElement.innerHTML = elementOptions[elementOffset + iColumn]
+
+				let _elementIndex = elementOffset + iColumn
+				let _elementValue = tmlColumnElement
+				tmlColumnElement.addEventListener("click", function(e)
+				{
+					e.stopPropagation()
+					dropDownSelection.innerHTML = _elementValue.innerHTML
+					dropDownList.style.display = "none"
+					clickEventListener(_elementIndex)
+				
+				})
+
+				tmlLineElement.appendChild(tmlColumnElement);
+			}
+			dropDownList.appendChild(tmlLineElement);
+		}
+
+		// for(let iColumn=0; iColumn<this.columnCount; iColumn++)
+		// {
+		// 	tmlColumnElement = document.createElement("div")
+		// 	tmlColumnElement.style = dropDownColumnEntryStyle
+
+		// 	let elementOffset = iColumn * lineCount
+		// 	for (let iLine = 0; i < lineCount; i++)
+		// 	{
+		// 		if(elementOffset + iLine >= elementOptions.length)
+		// 		{
+		// 			break;
+		// 		}
+		// 		tmlListElement = document.createElement("li")
+	
+		// 		tmlListElement.style = dropDownListElementStyle
+	
+		// 		tmlListElement.innerHTML = elementOptions[elementOffset + iLine]
+	
+		// 		let _elementIndex = elementOffset + iLine
+		// 		let _elementValue = tmlListElement
+		// 		tmlListElement.addEventListener("click", function(e)
+		// 		{
+		// 			e.stopPropagation()
+		// 			dropDownSelection.innerHTML = _elementValue.innerHTML
+		// 			dropDownList.style.display = "none"
+		// 			clickEventListener(_elementIndex)
+				
+		// 		})
+	
+		// 		tmlColumnElement.appendChild(tmlListElement);
+		// 	}
+		// 	dropDownList.appendChild(tmlColumnElement);
+
+		// }
 
 		dropDownSelection.addEventListener("click", function(e)
 		{

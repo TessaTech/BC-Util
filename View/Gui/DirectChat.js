@@ -24,6 +24,9 @@ Gui.DirectChat = class
 		this.colorListElementUnreadMessage = "#F08040"
 		this.colorListElementOffline = "#808080"
 
+		this.textRoomNameUnknown = "-Unknown-"
+		this.textRoomNameOffline = "-Offline-"
+
 		this.colorButtonDefault = "White"
 		this.colorButtonUnreadMessage = "#F08040"
 
@@ -71,10 +74,12 @@ Gui.DirectChat = class
 		let yMessages = yPartner + heightPartner
 		let ySend = yMessages + heightMessages + 1
 
+		let partnerColumnCount = 3
+
 		//Create GUI Elements
 		this.buttonShowHide = this.gameUserInterface.AddButton(15, 905, 60, 60, "", this.colorButtonDefault, "#808080", "Icons/Small/Chat.png", "Direct Chat", chatScreens, true, true)
 
-		this.dropDownPartner = this.gameUserInterface.AddDropDown(xPartner, yPartner, widthPartner, heightPartner, fontSizePartner, [[0, "Blaa"], [1, "BlaBlaa"]], 0, chatScreens, false)
+		this.dropDownPartner = this.gameUserInterface.AddDropDown(xPartner, yPartner, widthPartner, heightPartner, partnerColumnCount, fontSizePartner, [[0, "Blaa"], [1, "BlaBlaa"]], 0, chatScreens, false)
 		this.textAreaMessages = this.gameUserInterface.AddHtmlTextArea(xMessages, yMessages, widthMessages, heightMessages, fontSizeMessages, -1, "", chatScreens, false, true)
 		//this.textFieldSend = this.gameUserInterface.AddTextField(xSend, ySend, widthSend, heightSend, fontSizeSend, 1000, "", chatScreens, false)
 		this.textFieldSend = this.gameUserInterface.AddTextArea(xSend, ySend, widthSend, heightSend, fontSizeSend, 1000, "", chatScreens, false)
@@ -181,27 +186,25 @@ Gui.DirectChat = class
 		}
 
 		//Generate drop down entry list
-		let dropDownEntries = ["<div>None</div>"]
+		let dropDownEntries = ["<div style=background-color: "+this.colorListElementUnknown+" >None</div>"]
 		for(let i=0; i<this.onlinePartnerEntries.length; i++) // For each online partner...
 		{
 			//Generate entry
-			dropDownEntries.push("<div style=background-color:"+this.GetDropDownPartnerDisplayData(this.onlinePartnerEntries[i].memberNumber).color+">" + this.onlinePartnerEntries[i].name+" - "+ this.onlinePartnerEntries[i].memberNumber +" [" + this.onlinePartnerEntries[i].room + "]</div>")
+			dropDownEntries.push("<div style=background-color:" + this.GetDropDownPartnerDisplayData(this.onlinePartnerEntries[i].memberNumber).color+">" + this.onlinePartnerEntries[i].name+" - " + this.onlinePartnerEntries[i].memberNumber + " [" + this.onlinePartnerEntries[i].room + "]</div>")
 			if(this.onlinePartnerEntries[i].memberNumber == selectedObject.memberNumber) // If the entry was the previously selected one...
 			{
 				 //Remember the new index
 				selectIndex = (dropDownEntries.length - 1)
-				console.log("SelectedIndex:"+selectIndex)
 			}
 		}
 		for(let i=0; i<this.offlinePartnerEntries.length; i++) // For each offline partner...
 		{
 			//Generate entry
-			dropDownEntries.push("<div style=background-color:"+this.colorListElementOffline+">" + this.offlinePartnerEntries[i].name+" - "+ this.offlinePartnerEntries[i].memberNumber +" [-Offline-]</div>")
+			dropDownEntries.push("<div style=background-color:" + this.colorListElementOffline+">" + this.offlinePartnerEntries[i].name + " - " + this.offlinePartnerEntries[i].memberNumber + " [" + this.textRoomNameOffline + "]</div>")
 			if(this.offlinePartnerEntries[i].memberNumber == selectedObject.memberNumber) // If the entry was the previously selected one...
 			{
 				//Remember the new index
 				selectIndex = (dropDownEntries.length - 1)
-				console.log("SelectedIndex:"+selectIndex)
 			}
 		}
 		
@@ -423,7 +426,7 @@ Gui.DirectChat = class
 			if(this.IsPartnerKnown(memberNumber) == false) // If the current member is unknown...
 			{
 				//Add to online list until detected as online.
-				this.onlinePartnerEntries.push({ memberNumber : memberNumber, name : memberName, room : "-Unknown-" })
+				this.onlinePartnerEntries.push({ memberNumber : memberNumber, name : memberName, room : this.textRoomNameUnknown })
 			}
 			displayData.color = this.colorListElementUnreadMessage
 			this.UpdateDropDownPartner(this.onlinePartnerEntries, true)
