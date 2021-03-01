@@ -73,6 +73,7 @@ Utility.Game.UiElements.TextField = class
 			this.UpdateText()
 			this.gameTextInputExists = true
 
+			let _this = this
 			let element = document.getElementById(this.gameTextInputId)
 			element.addEventListener("keydown", function(eventData)
 				{
@@ -90,7 +91,6 @@ Utility.Game.UiElements.TextField = class
 				});
 		}
 		ElementPositionFix(this.gameTextInputId, this.fontSize, this.x, this.y, this.width, this.height)
-		let _this = this
 
 	}
 
