@@ -14,13 +14,15 @@ Gui.DirectChat = class
 		this.gameFriendList = initGameFriendList
 		this.beepMessenger = initBeepMessenger
 
-		this.lastPartnerEntries = [ ]
+		this.onlinePartnerEntries = [ ]
+		this.offlinePartnerEntries = [ ]
 		this.message = ""
 		
-		this.colorListElementUnknown = "#808080"
+		this.colorListElementUnknown = "#F0F0F0"
 		this.colorListElementPending = "#C02020"
 		this.colorListElementAvailable = "#408040"
 		this.colorListElementUnreadMessage = "#F08040"
+		this.colorListElementOffline = "#808080"
 
 		this.colorButtonDefault = "White"
 		this.colorButtonUnreadMessage = "#F08040"
@@ -103,7 +105,31 @@ Gui.DirectChat = class
 		return this.dropDownPartnerDisplayData[memberNumber]
 	}
 
-	UpdateDropDownPartner(partnerEntries, force)
+	GetPartnerDifference(partners1, partners2)
+	{
+		let diff = []
+		let found = false
+
+		for(let i=0; i<partners1.length; i++)
+		{
+			found = false
+			for(let j=0; j<partners2.length; j++)
+			{
+				if(partners1[i].memberNumber == partners2[j].memberNumber)
+				{
+					found = true
+				}
+			}
+			if(found == false)
+			{
+				diff.push(partners1[i])
+			}
+		}
+
+		return diff;
+	}
+
+	UpdateDropDownPartner(currentPartnerEntries, force)
 	{
 		if(this.visible == false)
 		{
@@ -113,39 +139,119 @@ Gui.DirectChat = class
 		let previouslySelectIndex = this.dropDownPartner.GetSelectedIndex()
 		let selectedObject = { memberNumber: -1 }
 		let selectIndex = 0
-		let changed = false
-		if(previouslySelectIndex > 0 && previouslySelectIndex <= this.lastPartnerEntries.length)
+
+		//Determine previous selection
+		selectedObject = this.GetSelectedPartner(previouslySelectIndex)
+		if(selectedObject == null)
 		{
-			selectedObject = this.lastPartnerEntries[previouslySelectIndex-1]
+			selectedObject = { memberNumber: -1 }
 		}
 
-		changed = (force == false && (this.lastPartnerEntries.length != partnerEntries.length))
+		//Detect changes: offline -> online; online -> offline
+		// let newOffline = this.onlinePartnerEntries.filter(x => (currentPartnerEntries.findIndex(y => y.memberNumber === x.memberNumber) < 0))
+		// let newOnline = currentPartnerEntries.filter(x => (this.onlinePartnerEntries.findIndex(y => y.memberNumber === x.memberNumber) < 0))
+		let newOffline = this.GetPartnerDifference(this.onlinePartnerEntries, currentPartnerEntries)
+		let newOnline = this.GetPartnerDifference(currentPartnerEntries, this.onlinePartnerEntries)
+		this.onlinePartnerEntries = currentPartnerEntries
+		
+		if(force == false && newOffline.length == 0 && newOnline.length == 0) // If no change happened and a change isn't forced...
+		{
+			// Do nothing
+			return;
+		}
 
+		//Update offline partner list
+		for(let i=0; i<newOffline.length; i++) // For each now offline partners...
+		{
+			if(this.beepMessenger.GetMessageHistoryLength(newOffline[i].memberNumber) > 0) // If a communication exists with them...
+			{
+				//Push them to the offline partner list
+				this.offlinePartnerEntries.push(newOffline[i])
+			}
+		}
+		for(let i=0; i<newOnline.length; i++) // For each now online partners...
+		{
+			//Check if some of them are in the offline partner list
+			let index = this.offlinePartnerEntries.findIndex(x => x.memberNumber == newOnline[i].memberNumber)
+			if(index >= 0) // If the now online partner is in the offline list...
+			{
+				//Remove them from the offline partner list
+				this.offlinePartnerEntries.splice(index, 1)
+			}
+		}
+
+		//Generate drop down entry list
 		let dropDownEntries = ["<div>None</div>"]
-		for(let i=0; i<partnerEntries.length; i++)
+		for(let i=0; i<this.onlinePartnerEntries.length; i++) // For each online partner...
 		{
-			dropDownEntries.push("<div style=background-color:"+this.GetDropDownPartnerDisplayData(partnerEntries[i].memberNumber).color+">" + partnerEntries[i].name+" - "+ partnerEntries[i].memberNumber +" [" + partnerEntries[i].room + "]</div>")
-			if(changed == false
-				&& (partnerEntries[i].memberNumber != this.lastPartnerEntries[i].memberNumber
-					|| partnerEntries[i].name != this.lastPartnerEntries[i].name
-					|| partnerEntries[i].room != this.lastPartnerEntries[i].room
-			))
+			//Generate entry
+			dropDownEntries.push("<div style=background-color:"+this.GetDropDownPartnerDisplayData(this.onlinePartnerEntries[i].memberNumber).color+">" + this.onlinePartnerEntries[i].name+" - "+ this.onlinePartnerEntries[i].memberNumber +" [" + this.onlinePartnerEntries[i].room + "]</div>")
+			if(this.onlinePartnerEntries[i].memberNumber == selectedObject.memberNumber) // If the entry was the previously selected one...
 			{
-				changed = true
+				 //Remember the new index
+				selectIndex = (dropDownEntries.length - 1)
+				console.log("SelectedIndex:"+selectIndex)
 			}
-			if(partnerEntries[i].memberNumber == selectedObject.memberNumber)
+		}
+		for(let i=0; i<this.offlinePartnerEntries.length; i++) // For each offline partner...
+		{
+			//Generate entry
+			dropDownEntries.push("<div style=background-color:"+this.colorListElementOffline+">" + this.offlinePartnerEntries[i].name+" - "+ this.offlinePartnerEntries[i].memberNumber +" [-Offline-]</div>")
+			if(this.offlinePartnerEntries[i].memberNumber == selectedObject.memberNumber) // If the entry was the previously selected one...
 			{
-				selectIndex = (i + 1)
+				//Remember the new index
+				selectIndex = (dropDownEntries.length - 1)
+				console.log("SelectedIndex:"+selectIndex)
 			}
 		}
 		
-		if(changed == true || force == true)
+		//Update the drop down list
+		this.dropDownPartner.SetObjects(dropDownEntries)
+		this.dropDownPartner.SetSelection(selectIndex)
+		
+	}
+
+	GetSelectedPartner(dropDownIndex)
+	{
+		if(dropDownIndex <= 0)
 		{
-			this.lastPartnerEntries = partnerEntries
-			this.dropDownPartner.SetObjects(dropDownEntries)
-			this.dropDownPartner.SetSelection(selectIndex)
+			return null;
+		}
+
+		let partner = null
+
+		if(dropDownIndex <= this.onlinePartnerEntries.length)
+		{
+			partner = this.onlinePartnerEntries[dropDownIndex - 1]
+		}
+		else if(dropDownIndex <= this.onlinePartnerEntries.length + this.offlinePartnerEntries.length)
+		{
+			partner = this.offlinePartnerEntries[dropDownIndex - this.onlinePartnerEntries.length - 1]
+		}
+
+		return partner;
+
+	}
+
+	IsPartnerKnown(memberNumber)
+	{
+		for(let i=0; i<this.onlinePartnerEntries.length; i++)
+		{
+			if(this.onlinePartnerEntries[i].memberNumber == memberNumber)
+			{
+				return true;
+			}
+		}
+		for(let i=0; i<this.offlinePartnerEntries.length; i++)
+		{
+			if(this.offlinePartnerEntries[i].memberNumber == memberNumber)
+			{
+				return true;
+			}
 		}
 		
+		return false;
+
 	}
 
 	SelectChatPartner(memberNumber)
@@ -181,11 +287,9 @@ Gui.DirectChat = class
 		{
 			this.buttonShowHide.colorActive = this.colorButtonDefault
 		}
-		this.UpdateDropDownPartner(this.lastPartnerEntries, true)
+		this.UpdateDropDownPartner(this.onlinePartnerEntries, true)
 		this.textAreaMessages.SetText(this.message)
 	}
-
-
 
 	OnGameFriendListEventOnlineFriendsChanged(onlineFriends)
 	{
@@ -208,10 +312,10 @@ Gui.DirectChat = class
 			this.gameFriendList.QuerryFriendlist()
 
 			let selectedIndex = this.dropDownPartner.GetSelectedIndex()
-			if(selectedIndex > 0)
+			let selectedPartner = this.GetSelectedPartner(selectedIndex)
+			if(selectedPartner != null)
 			{
-				let selectedPartnerMemberNumber = this.lastPartnerEntries[selectedIndex-1].memberNumber
-				this.SelectChatPartner(selectedPartnerMemberNumber)
+				this.SelectChatPartner(selectedPartner.memberNumber)
 			}
 
 		}
@@ -231,13 +335,13 @@ Gui.DirectChat = class
 	OnDropDownPartnerSelectionChanged(newSelectedElement)
 	{
 		let selectedIndex = this.dropDownPartner.GetSelectedIndex()
-		if(selectedIndex < 1 || selectedIndex > this.lastPartnerEntries.length)
+		let selectedPartner = this.GetSelectedPartner(selectedIndex)
+		if(selectedPartner == null)
 		{
 			this.textAreaMessages.SetText("")
 			return;
 		}
-		let selectedPartnerMemberNumber = this.lastPartnerEntries[selectedIndex-1].memberNumber
-		this.SelectChatPartner(selectedPartnerMemberNumber)
+		this.SelectChatPartner(selectedPartner.memberNumber)
 	}
 
 	OnTextFieldSendAccepted(newText)
@@ -248,21 +352,21 @@ Gui.DirectChat = class
 		}
 
 		let selectedIndex = this.dropDownPartner.GetSelectedIndex()
-		if(selectedIndex < 1 || selectedIndex > this.lastPartnerEntries.length)
+		let targetPartner = this.GetSelectedPartner(selectedIndex)
+		if(targetPartner == null)
 		{
 			return;
 		}
-		let targetMemberNumber = this.lastPartnerEntries[selectedIndex-1].memberNumber
 
 		if(newText.indexOf("**") == 0) // If it's an action...
 		{
 			newText = newText.substr(2)
-			this.beepMessenger.SendAction(targetMemberNumber, newText)
+			this.beepMessenger.SendAction(targetPartner.memberNumber, newText)
 		}
 		else if(newText.indexOf("/action ") == 0) // If it's an action...
 		{
 			newText = newText.substr(8)
-			this.beepMessenger.SendAction(targetMemberNumber, newText)
+			this.beepMessenger.SendAction(targetPartner.memberNumber, newText)
 		}
 		else if(newText.indexOf("*") == 0) // If it's an emote...
 		{
@@ -271,16 +375,16 @@ Gui.DirectChat = class
 			{
 				newText = " " + newText
 			}
-			this.beepMessenger.SendEmote(targetMemberNumber, newText)
+			this.beepMessenger.SendEmote(targetPartner.memberNumber, newText)
 		}
 		else if(newText.indexOf("/me ") == 0) // If it's an emote...
 		{
 			newText = newText.substr(3)
-			this.beepMessenger.SendEmote(targetMemberNumber, newText)
+			this.beepMessenger.SendEmote(targetPartner.memberNumber, newText)
 		}
 		else // If it's a regular message...
 		{
-			this.beepMessenger.SendMessage(targetMemberNumber, newText)
+			this.beepMessenger.SendMessage(targetPartner.memberNumber, newText)
 		}
 
 		this.textFieldSend.SetText("")
@@ -289,20 +393,20 @@ Gui.DirectChat = class
 	OnBeepMessengerConversationOpened(memberNumber)
 	{
 		this.GetDropDownPartnerDisplayData(memberNumber).color = this.colorListElementAvailable
-		this.UpdateDropDownPartner(this.lastPartnerEntries, true)
+		this.UpdateDropDownPartner(this.onlinePartnerEntries, true)
 	}
 
 	OnBeepMessengerReceivedMessage(memberNumber, memberName, messageType, message, messageColor, date)
 	{
 		let appendMessage = false
 		let selectedIndex = this.dropDownPartner.GetSelectedIndex()
+		let targetPartner = this.GetSelectedPartner(selectedIndex)
 
-		if(this.visible == true && selectedIndex > 0 && selectedIndex <= this.lastPartnerEntries.length) // If the chat is visible and a valid partner is selected...
-		{
-			//appendMessage is true if we received a message from the currently selected chat partner or the player just sent it
-			appendMessage = (this.lastPartnerEntries[selectedIndex-1].memberNumber == memberNumber) ||
-							(this.gameCharacters.GetPlayer().MemberNumber == memberNumber)
-		}
+		//appendMessage is true if the chat is visible and we received a message from the currently selected chat partner or the player just sent it
+		appendMessage = (this.visible == true &&
+						targetPartner != null &&
+						(targetPartner.memberNumber == memberNumber) ||
+						(this.gameCharacters.GetPlayer().MemberNumber == memberNumber))
 		if(appendMessage == true) // If the received message is of the currently selected partner or the player...
 		{
 			this.message += this.ConstructMessageEntry(date, memberNumber, memberName, messageType, message, messageColor)
@@ -316,8 +420,13 @@ Gui.DirectChat = class
 				displayData.unread = true
 				this.unreadMessageCount += 1
 			}
+			if(this.IsPartnerKnown(memberNumber) == false) // If the current member is unknown...
+			{
+				//Add to online list until detected as online.
+				this.onlinePartnerEntries.push({ memberNumber : memberNumber, name : memberName, room : "-Unknown-" })
+			}
 			displayData.color = this.colorListElementUnreadMessage
-			this.UpdateDropDownPartner(this.lastPartnerEntries, true)
+			this.UpdateDropDownPartner(this.onlinePartnerEntries, true)
 			this.buttonShowHide.colorActive = this.colorButtonUnreadMessage
 		}
 
@@ -338,7 +447,7 @@ Gui.DirectChat = class
 		let tmpDate = (date.getMonth()+1).zeroPadding(2)+"."+
 						date.getDate().zeroPadding(2)+"."+
 						date.getFullYear().zeroPadding(4)+" "+
-			date.getHours().zeroPadding(2)+" "+
+			date.getHours().zeroPadding(2)+":"+
 			date.getMinutes().zeroPadding(2)+":"+
 			date.getSeconds().zeroPadding(2)
 		if(messageType == "Message")

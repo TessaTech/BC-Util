@@ -66,6 +66,12 @@ BeepMessages.BeepMessenger = class
 		return conversation.messageHistory
 	}
 
+	GetMessageHistoryLength(memberNumber)
+	{
+		let conversation = this.GetConversation(memberNumber)
+		return conversation.messageHistory.length
+	}
+
 	GetLastMessageHistoryEntry(memberNumber)
 	{
 		let conversation = this.GetConversation(memberNumber)
