@@ -15,8 +15,10 @@ Gui.AppearanceUtilities = class
 
 		this.appearanceLayerOverrideScreens = ["AppearanceCloth"]
 
-		this.textLabelAppearanceLayer = this.gameUserInterface.AddTextLabel(1175, 35, 90, 25, "Layer", "#000000", null, "text", this.appearanceLayerOverrideScreens, true)
-		this.textFieldAppearanceLayer = this.gameUserInterface.AddTextField(1175, 70, 90, 25, 24, 3, "0", this.appearanceLayerOverrideScreens, true)
+		// this.textLabelAppearanceLayer = this.gameUserInterface.AddTextLabel(1175, 35, 90, 25, "Layer", "#000000", null, "text", this.appearanceLayerOverrideScreens, true)
+		// this.textFieldAppearanceLayer = this.gameUserInterface.AddTextField(1175, 70, 90, 25, 24, 3, "0", this.appearanceLayerOverrideScreens, true)
+		this.textLabelAppearanceLayer = this.gameUserInterface.AddTextLabel(1060, 35, 90, 25, "Layer", "#000000", null, "text", this.appearanceLayerOverrideScreens, true)
+		this.textFieldAppearanceLayer = this.gameUserInterface.AddTextField(1060, 70, 90, 25, 24, 3, "0", this.appearanceLayerOverrideScreens, true)
 		
 		let _this = this
 		this.gameScreenProperties.RegisterEventAppearanceEnteredClothSelection(function(newText) { _this.OnAppearanceEnteredClothSelection(newText); })
