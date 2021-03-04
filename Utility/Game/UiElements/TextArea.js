@@ -50,7 +50,7 @@ Utility.Game.UiElements.TextArea = class
 		this.screens = initScreens
 		this.visible = initVisible
 		this.unused = false
-		
+
 		this.keyDown = false
 		this.eventTextChanged = new Utility.Event()
 		this.eventAccepted = new Utility.Event()
@@ -97,14 +97,24 @@ Utility.Game.UiElements.TextArea = class
 					if(_this.keyDown == true) { return; }
 					_this.keyDown = true
 	
-					_this.OnElementKeyDown(eventData.key)
+					let returnValues = { preventDefault: false }
+					_this.OnElementKeyDown(eventData.key, returnValues)
+					if(returnValues.preventDefault == true)
+					{
+						event.preventDefault();
+					}
 				});
 			element.addEventListener("keyup", function(eventData)
 				{
 					if(_this.keyDown == false) { return; }
 					_this.keyDown = false
 					
-					_this.OnElementKeyUp(eventData.key)
+					let returnValues = { preventDefault: false }
+					_this.OnElementKeyUp(eventData.key, returnValues)
+					if(returnValues.preventDefault == true)
+					{
+						event.preventDefault();
+					}
 				});
 
 			if(this.scrollToEndOnShow == true)
@@ -189,17 +199,22 @@ Utility.Game.UiElements.TextArea = class
 		this.unused = true
 	}
 
-	OnElementKeyDown(key)
+	OnElementKeyDown(key, returnValues)
 	{
 		if (key == "Enter") // If enter was pressed...
 		{
+			returnValues.preventDefault = true
 			this.RaiseEventAccepted(this.GetText())
 		}
 		this.GetText()
 	}
 
-	OnElementKeyUp(key)
+	OnElementKeyUp(key, returnValues)
 	{
+		if (key == "Enter") // If enter was pressed...
+		{
+			returnValues.preventDefault = true
+		}
 		this.GetText()
 	}
 

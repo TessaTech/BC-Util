@@ -80,14 +80,24 @@ Utility.Game.UiElements.TextField = class
 					if(_this.keyDown == true) { return; }
 					_this.keyDown = true
 	
-					_this.OnElementKeyDown(eventData.key)
+					let returnValues = { preventDefault: false }
+					_this.OnElementKeyDown(eventData.key, returnValues)
+					if(returnValues.preventDefault == true)
+					{
+						event.preventDefault();
+					}
 				});
 			element.addEventListener("keyup", function(eventData)
 				{
 					if(_this.keyDown == false) { return; }
 					_this.keyDown = false
 					
-					_this.OnElementKeyUp(eventData.key)
+					let returnValues = { preventDefault: false }
+					_this.OnElementKeyUp(eventData.key, returnValues)
+					if(returnValues.preventDefault == true)
+					{
+						event.preventDefault();
+					}
 				});
 		}
 		ElementPositionFix(this.gameTextInputId, this.fontSize, this.x, this.y, this.width, this.height)
@@ -161,17 +171,22 @@ Utility.Game.UiElements.TextField = class
 		this.unused = true
 	}
 
-	OnElementKeyDown(key)
+	OnElementKeyDown(key, returnValues)
 	{
 		if (key == "Enter") // If enter was pressed...
 		{
+			returnValues.preventDefault = true
 			this.RaiseEventAccepted(this.GetText())
 		}
 		this.GetText()
 	}
 
-	OnElementKeyUp(key)
+	OnElementKeyUp(key, returnValues)
 	{
+		if (key == "Enter") // If enter was pressed...
+		{
+			returnValues.preventDefault = true
+		}
 		this.GetText()
 	}
 
