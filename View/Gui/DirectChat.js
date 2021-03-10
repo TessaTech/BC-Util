@@ -186,7 +186,7 @@ Gui.DirectChat = class
 		}
 
 		//Generate drop down entry list
-		let dropDownEntries = ["<div style=background-color: "+this.colorListElementUnknown+" >None</div>"]
+		let dropDownEntries = ["<div style=background-color: " + this.colorListElementUnknown + ">None</div>"]
 		for(let i=0; i<this.onlinePartnerEntries.length; i++) // For each online partner...
 		{
 			//Generate entry
@@ -200,7 +200,7 @@ Gui.DirectChat = class
 		for(let i=0; i<this.offlinePartnerEntries.length; i++) // For each offline partner...
 		{
 			//Generate entry
-			dropDownEntries.push("<div style=background-color:" + this.colorListElementOffline+">" + this.offlinePartnerEntries[i].name + " - " + this.offlinePartnerEntries[i].memberNumber + " [" + this.textRoomNameOffline + "]</div>")
+			dropDownEntries.push("<div style=background-color:" + this.colorListElementOffline + ">" + this.offlinePartnerEntries[i].name + " - " + this.offlinePartnerEntries[i].memberNumber + " [" + this.textRoomNameOffline + "]</div>")
 			if(this.offlinePartnerEntries[i].memberNumber == selectedObject.memberNumber) // If the entry was the previously selected one...
 			{
 				//Remember the new index

@@ -118,7 +118,6 @@ Utility.Game.UiElements.DropDown = class
 										"cursor: pointer;"
 
 		let dropDownLineEntryStyle =	"position: relative;"+
-										"float: top;"+
 										"height: auto;"+
 										"width: 100%;"+
 										"padding: 0px;"+
