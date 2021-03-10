@@ -38,7 +38,6 @@ Utility.Game.UiElements.HtmlTextArea = class
 		this.unused = false
 		
 		this.scrollToEndOnShow = initScrollToEndOnShow
-		//this.eventTextChanged = new Utility.Event()
 
 	}
 	
@@ -69,38 +68,6 @@ Utility.Game.UiElements.HtmlTextArea = class
 		if(this.gameTextAreaExists == false)
 		{
 			ElementCreateDiv(this.gameTextAreaId)
-			// document.getElementById(this.gameTextAreaId).style =
-			// 	"width: "+this.width+"px;"+
-			// 	"height: "+this.height+"px;"+
-			// 	"font-size: "+this.fontSize+"px;"+
-			// 	"font-family: Arial;"+
-			// 	"display: inline;"+
-			// 	// "white-space: pre-wrap;"+
-			// 	"overflow-wrap: break-word;"+
-			// 	"background-color: white;"+
-			// 	"border-top-color: black;"+
-			// 	"border-top-style: solid;"+
-			// 	"border-top-width: 1px;"+
-			// 	"border-right-color: black;"+
-			// 	"border-right-style: solid;"+
-			// 	"border-right-width: 1px;"+
-			// 	"border-bottom-color: black;"+
-			// 	"border-bottom-style: solid;"+
-			// 	"border-bottom-width: 1px;"+
-			// 	"border-left-color: black;"+
-			// 	"border-left-style: solid;"+
-			// 	"border-left-width: 1px;"+
-			// 	"border-image-outset: 0;"+
-			// 	"border-image-repeat: stretch;"+
-			// 	"border-image-slice: 100%;"+
-			// 	"border-image-source: none;"+
-			// 	"border-image-width: 1;"+
-			// 	"overflow-x: auto;"+
-			// 	"overflow-y: auto;"+
-			// 	"padding-top: 0px;"+
-			// 	"padding-right: 0px;"+
-			// 	"padding-bottom: 0px;"+
-			// 	"padding-left: 0px;"
 			document.getElementById(this.gameTextAreaId).style =
 				"width: "+this.width+"px;"+
 				"height: "+this.height+"px;"+
@@ -121,7 +88,6 @@ Utility.Game.UiElements.HtmlTextArea = class
 			}
 		}
 		ElementPositionFix(this.gameTextAreaId, this.fontSize, this.x, this.y, this.width, this.height)
-		//this.GetText()
 
 	}
 
@@ -131,7 +97,6 @@ Utility.Game.UiElements.HtmlTextArea = class
 		if(value != null && (value.length != this.text.length || value != this.text))
 		{
 			this.text = value
-			//this.RaiseEventTextChanged(this.text)
 		}
 		return this.text
 	}
@@ -158,21 +123,6 @@ Utility.Game.UiElements.HtmlTextArea = class
 	{
 		ElementContent(this.gameTextAreaId, this.text)
 	}
-
-	// RegisterEventTextChanged(eventHandler)
-	// {
-	// 	return this.eventTextChanged.Register(eventHandler)
-	// }
-
-	// UnregisterEventTextChanged(eventId)
-	// {
-	// 	return this.eventTextChanged.Unregister(eventId)
-	// }
-
-	// RaiseEventTextChanged(newText)
-	// {
-	// 	this.eventTextChanged.Raise(newText)
-	// }
 
 	Show()
 	{

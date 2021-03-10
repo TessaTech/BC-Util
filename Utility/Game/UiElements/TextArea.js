@@ -15,20 +15,6 @@ if(Utility.Game.UiElements == undefined)
 
 Utility.Game.UiElements.TextArea = class
 {
-	// gameTextAreaId = ""
-	// gameTextAreaExists = false
-
-	// x = 0
-	// y = 0
-	// width = 0
-	// height = 0
-	// fontSize = 0
-	// text = ""
-
-	// screens = []
-	// visible = true
-	// unused = false
-
 	constructor(initGameTextAreaId, initX, initY, initWidth, initHeight, initFontSize, initMaxLength, initText, initScreens, initVisible, initScrollToEndOnShow)
 	{
 		if(initText == null) { initText = ""; }
