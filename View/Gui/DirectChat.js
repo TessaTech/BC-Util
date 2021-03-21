@@ -74,7 +74,7 @@ Gui.DirectChat = class
 		let yMessages = yPartner + heightPartner
 		let ySend = yMessages + heightMessages + 1
 
-		let partnerColumnCount = 3
+		let partnerColumnCount = 1
 
 		//Create GUI Elements
 		this.buttonShowHide = this.gameUserInterface.AddButton(15, 905, 60, 60, "", this.colorButtonDefault, "#808080", "Icons/Small/Chat.png", "Direct Chat", chatScreens, true, true)
