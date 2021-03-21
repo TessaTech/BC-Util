@@ -183,41 +183,6 @@ Utility.Game.UiElements.DropDown = class
 			dropDownList.appendChild(tmlLineElement);
 		}
 
-		// for(let iColumn=0; iColumn<this.columnCount; iColumn++)
-		// {
-		// 	tmlColumnElement = document.createElement("div")
-		// 	tmlColumnElement.style = dropDownColumnEntryStyle
-
-		// 	let elementOffset = iColumn * lineCount
-		// 	for (let iLine = 0; i < lineCount; i++)
-		// 	{
-		// 		if(elementOffset + iLine >= elementOptions.length)
-		// 		{
-		// 			break;
-		// 		}
-		// 		tmlListElement = document.createElement("li")
-	
-		// 		tmlListElement.style = dropDownListElementStyle
-	
-		// 		tmlListElement.innerHTML = elementOptions[elementOffset + iLine]
-	
-		// 		let _elementIndex = elementOffset + iLine
-		// 		let _elementValue = tmlListElement
-		// 		tmlListElement.addEventListener("click", function(e)
-		// 		{
-		// 			e.stopPropagation()
-		// 			dropDownSelection.innerHTML = _elementValue.innerHTML
-		// 			dropDownList.style.display = "none"
-		// 			clickEventListener(_elementIndex)
-				
-		// 		})
-	
-		// 		tmlColumnElement.appendChild(tmlListElement);
-		// 	}
-		// 	dropDownList.appendChild(tmlColumnElement);
-
-		// }
-
 		dropDownSelection.addEventListener("click", function(e)
 		{
 			e.stopPropagation()
