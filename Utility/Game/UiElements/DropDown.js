@@ -16,7 +16,7 @@ if(Utility.Game.UiElements == undefined)
 //ElementCreateInput
 Utility.Game.UiElements.DropDown = class
 {
-	constructor(initGameTextInputId, initX, initY, initWidth, initHeight, initColumnCount, initFontSize, initObjects, initSelectedObjectId, initScreens, initVisible)
+	constructor(initGameTextInputId, initX, initY, initWidth, initHeight, initSelectBoxMaxHeight, initColumnCount, initFontSize, initObjects, initSelectedObjectId, initScreens, initVisible)
 	{
 		if(initObjects == null) { initObjects = []; }
 		if(initScreens == null) { initScreens = []; }
@@ -29,6 +29,7 @@ Utility.Game.UiElements.DropDown = class
 		this.y = initY
 		this.width = initWidth
 		this.height = initHeight
+		this.selectBoxMaxHeight = initSelectBoxMaxHeight
 		this.columnCount = initColumnCount
 		this.fontSize = initFontSize
 		
@@ -100,12 +101,13 @@ Utility.Game.UiElements.DropDown = class
 								"display: none;"+
 								"width: 100%;"+
 								"height: auto;"+
+								"max-height: "+this.selectBoxMaxHeight.toString()+"px;"+
 								"background-color: #FFFFFF;"+
 								"color: #000000;"+
 								"padding: 0px;"+
 								"border: 0px none;"+
 								"margin: 0px;"+
-								"overflow-x: auto;"+
+								"overflow-x: hidden;"+
 								"overflow-y: auto;";
 
 		let dropDownListElementStyle =	"position: relative;"+

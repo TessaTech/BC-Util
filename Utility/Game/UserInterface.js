@@ -143,7 +143,7 @@ Utility.Game.UserInterface = class
 		return newTextField
 	}
 
-	AddDropDown(x, y, width, height, columnCount, fontSize, objects, selectedIndex, screens, visible)
+	AddDropDown(x, y, width, height, selectBoxMaxHeight, columnCount, fontSize, objects, selectedIndex, screens, visible)
 	{
 		let newGameDropDownId = "Utility.Game.UserInterface.DropDown_"
 		
@@ -156,7 +156,7 @@ Utility.Game.UserInterface = class
 			newGameDropDownId = "Utility.Game.UserInterface.DropDown_" + this.textFields.length.toString()
 		}
 
-		let newDropDown = new Utility.Game.UiElements.DropDown(newGameDropDownId, x, y, width, height, columnCount, fontSize, objects, selectedIndex, screens, visible)
+		let newDropDown = new Utility.Game.UiElements.DropDown(newGameDropDownId, x, y, width, height, selectBoxMaxHeight, columnCount, fontSize, objects, selectedIndex, screens, visible)
 		this.dropDowns.push(newDropDown)
 
 		return newDropDown
