@@ -18,23 +18,33 @@ The current version contains the following features:
 		- If it becomes green, the desired partner has the expansion installed and is ready to receive chat messages
 	- If a chat message is received while the chat window is closed, the chat iron in the bottom-left corner and the related entry in the partner selection drop down box becomes orange
 
-# Important
-**This extension is currently in beta stage. Please report any bugs you might find**
+**Please report any bugs you might find**
 
 # Browser Support
-- Only google chrome on desktop PCs is supported right now, more browsers might follow later on
+- Google Chrome and Mozilla Firefox on desktop PCs are supported.
 
 # How to Install
+- Google Chrome
 1. Download the newest version from: https://github.com/TessaTech/BC-Util/releases
 2. Extract the downloaded zip archive on your hard drive
 3. Open Google Chrome
 4. Visit the chrome extension configuration at chrome://extensions/
 5. Enable developer mode with the switch in the top right corner
-6. Click "Load unpacked" button in the top lest corner
+6. Click the "Load unpacked" button in the top lest corner
 7. Navigate to and select the extension's unpacked folder on your hard drive
 8. The addon is now installed. You might have to refresh the Bondage Club page if it's already open to load it with the addon
 
+- Mozilla Firefox
+1. Download the newest version from: https://github.com/TessaTech/BC-Util/releases
+2. Extract the downloaded zip archive on your hard drive
+3. Open Mozilla Firefox
+4. Visit the firefox extension configuration at about:debugging#/runtime/this-firefox
+5. Click the "Load temporary add-on" button in the upper part of the screen
+6. Navigate to and select the extension's unpacked folder on your hard drive
+7. The addon is now installed. You might have to refresh the Bondage Club page if it's already open to load it with the addon
+**Note: Due to Firefox' add-on policy, steps 4, 5 and 6 need to be repeated after every browser restart**
+
 # About
-_BC-Util Version 1.1.1_
+_BC-Util Version 1.1.2_
 
 _Created by Tessa (8863) /TessaTech@github_
