@@ -29,13 +29,13 @@ Gui.WardrobeUtilities = class
 
 		//CreateTextArea(this.importExportBoxName)
 
-		this.importExportScreens = ["Appearance"]
+		this.importExportScreens = ["AppearanceWardrobe"]
 		let _this = this
 
-		this.buttonImport = this.gameUserInterface.AddButton(1070, 25, 90, 40,
+		this.buttonImport = this.gameUserInterface.AddButton(1415, 25, 90, 40,
 			"Import", "White", "#808080", "", "Import a previously exported wardrobe",
 			this.importExportScreens, true, true)
-		this.buttonExport = this.gameUserInterface.AddButton(1070, 75, 90, 40,
+		this.buttonExport = this.gameUserInterface.AddButton(1415, 75, 90, 40,
 			"Export", "White", "#808080", "", "Export then current wardrobe",
 			this.importExportScreens, true, true)
 		this.textAreaImportExport = this.gameUserInterface.AddTextArea(100, 160, 1790, 750, 12, -1, "", this.importExportScreens, false)
