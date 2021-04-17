@@ -34,13 +34,13 @@ Gui.DirectChat = class
 		this.unreadMessageCount = 0
 
 		let chatScreens = [
-			"AsylumBedroom", "AsylumEntrance", "AsylumMeeting", "AsylumTherapy",
+			"Arcade", "AsylumBedroom", "AsylumEntrance", "AsylumMeeting", "AsylumTherapy",
 			"Cafe", "Cell", "ChatRoom", "ChatSearch", "CollegeCafeteria", "CollegeChess", "CollegeDetention", "CollegeEntrance", "CollegeTeacher", "CollegeTennis", "CollegeTheater",
 			"DailyJob",
 			"Empty",
 			"Gambling",
-			"Introduction",
-			"KidnapLeague",
+			"Infiltration", "Introduction",
+			"KidnapLeague", "KinkyDungeon",
 			"LARP",
 			"Magic", "MaidQuarters", "MainHall", "Management", "MovieStudio", 
 			"Nursery",
