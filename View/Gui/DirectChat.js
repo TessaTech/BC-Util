@@ -7,11 +7,12 @@ if(Gui == undefined)
 
 Gui.DirectChat = class
 {
-	constructor(initGameCharacters, initGameUserInterface, initGameFriendList, initBeepMessenger)
+	constructor(initGameCharacters, initGameUserInterface, initGameFriendList, initGameServer, initBeepMessenger)
 	{
 		this.gameCharacters = initGameCharacters
 		this.gameUserInterface = initGameUserInterface
 		this.gameFriendList = initGameFriendList
+		this.gameServer = initGameServer
 		this.beepMessenger = initBeepMessenger
 
 		this.onlinePartnerEntries = [ ]
@@ -88,6 +89,8 @@ Gui.DirectChat = class
 		//Register Events
 		let _this = this
 		this.gameFriendList.RegisterEventOnlineFriendsChanged(function(onlineFriends){ _this.OnGameFriendListEventOnlineFriendsChanged(onlineFriends); })
+		this.gameServer.RegisterEventDisconnected(function(data){ _this.OnServerDisconnect(data); })
+
 		this.beepMessenger.RegisterEventConversationOpened(function(memberNumber){ _this.OnBeepMessengerConversationOpened(memberNumber); })
 		this.beepMessenger.RegisterEventReceivedMessage(function(memberNumber, memberName, messageType, message, messageColor, date){ _this.OnBeepMessengerReceivedMessage(memberNumber, memberName, messageType, message, messageColor, date); })
 
@@ -295,15 +298,9 @@ Gui.DirectChat = class
 		this.textAreaMessages.SetText(this.message)
 	}
 
-	OnGameFriendListEventOnlineFriendsChanged(onlineFriends)
+	SetChatVisibility(visible)
 	{
-		this.UpdateDropDownPartner(onlineFriends, false)
-	}
-
-	OnButtonShowHideClick()
-	{
-		this.visible = !this.visible
-		if(this.visible == true)
+		if(visible == true)
 		{
 			//Block native game clicks and button press events while in direct chat
 			this.gameUserInterface.BlockGameClick()
@@ -334,6 +331,17 @@ Gui.DirectChat = class
 			//Note: The next game click will be executed after returning from this event, so to prevent this very button clock from doing unintentional stuff, just the next execution has to be blocked
 			this.gameUserInterface.BlockNextGameClick()
 		}
+	}
+
+	OnGameFriendListEventOnlineFriendsChanged(onlineFriends)
+	{
+		this.UpdateDropDownPartner(onlineFriends, false)
+	}
+
+	OnButtonShowHideClick()
+	{
+		this.visible = !this.visible
+		this.SetChatVisibility(this.visible)
 	}
 
 	OnDropDownPartnerSelectionChanged(newSelectedElement)
@@ -434,6 +442,12 @@ Gui.DirectChat = class
 			this.buttonShowHide.colorActive = this.colorButtonUnreadMessage
 		}
 
+	}
+
+	OnServerDisconnect(data)
+	{
+		this.visible = false;
+		this.SetChatVisibility(this.visible);
 	}
 
 	TransparentColor(color)

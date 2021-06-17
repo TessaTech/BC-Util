@@ -16,6 +16,7 @@ Mod = class
 		this.LogLoadSection("Game Interface")
 		this.gameAssets = new Utility.Game.Assets()
 		this.gameCharacters = new Utility.Game.Characters(this.gameAssets)
+		this.gameServer = new Utility.Game.Server()
 		this.gameBeeps = new Utility.Game.Beeps()
 		this.gameFriendList = new Utility.Game.FriendList()
 		this.gameScreenProperties = new Utility.Game.ScreenProperties()
@@ -39,7 +40,7 @@ Mod = class
 		this.LogLoadSection("Graphical user Interfaces")
 		this.guiWardrobeUtilities = new Gui.WardrobeUtilities(this.gameUserInterface, this.wardrobeUtilities)
 		this.guiAppearanceUtilities = new Gui.AppearanceUtilities(this.gameUserInterface, this.gameScreenProperties, this.appearanceUtilities)
-		this.guiDirectChat = new Gui.DirectChat(this.gameCharacters, this.gameUserInterface, this.gameFriendList, this.beepMessenger)
+		this.guiDirectChat = new Gui.DirectChat(this.gameCharacters, this.gameUserInterface, this.gameFriendList, this.gameServer, this.beepMessenger)
 
 		this.LogFinishedLoading()
 
