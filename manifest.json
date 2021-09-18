@@ -2,12 +2,12 @@
 	"manifest_version": 2,
 	"name": "BC-Util",
 	"version": "0.0.1",
-	
+
 	"description": "Additional convenience features for the browser game Bondage Club.",
 	"icons": {
 		"48": "icons/icon-48.png"
 	},
-	
+
 	"permissions": [
         "declarativeContent",
         "activeTab",
@@ -16,31 +16,32 @@
         "http://*/*",
         "https://*/*"
 	],
-	
+
     "web_accessible_resources": [
         "*"
     ],
-	
+
 	"content_scripts":
 	[
 		{
             "run_at": "document_end",
 			"matches": [
 				"*://*.bondageprojects.com/*",
-				"*://*.bondageprojects.elementfx.com/*"
+				"*://*.bondageprojects.elementfx.com/*",
+				"*://*.bondage-europe.com/*"
 			],
             "all_frames": true,
 			"js": ["Utility/Event.js",
 				"Utility/FunctionCallHook.js",
 				"Utility/Utility.js",
-				
+
 				"Utility/Game/UiElements/Button.js",
 				"Utility/Game/UiElements/DropDown.js",
 				"Utility/Game/UiElements/TextLabel.js",
 				"Utility/Game/UiElements/TextArea.js",
 				"Utility/Game/UiElements/HtmlTextArea.js",
 				"Utility/Game/UiElements/TextField.js",
-				
+
 				"Utility/Game/Assets.js",
 				"Utility/Game/Beeps.js",
 				"Utility/Game/Characters.js",
@@ -48,17 +49,17 @@
 				"Utility/Game/UserInterface.js",
 				"Utility/Game/Wardrobe.js",
 				"Utility/Game/ScreenProperties.js",
-				
+
 				"Model/WardrobeUtilities/WardrobeUtilities.js",
 				"Model/AppearanceUtilities/AppearanceUtilities.js",
 				"Model/BeepMessages/BeepCommunicator.js",
 				"Model/BeepMessages/BeepConversation.js",
 				"Model/BeepMessages/BeepMessenger.js",
-				
+
 				"View/Gui/WardrobeUtilities.js",
 				"View/Gui/AppearanceUtilities.js",
 				"View/Gui/DirectChat.js",
-				
+
 				"Mod.js",
 				"Main.js"]
 		}
