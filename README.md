@@ -45,6 +45,6 @@ The current version contains the following features:
 **Note: Due to Firefox' add-on policy, steps 4, 5 and 6 need to be repeated after every browser restart**
 
 # About
-_BC-Util Version 1.1.3_
+_BC-Util Version 1.1.4_
 
 _Created by Tessa (8863) /TessaTech@github_
