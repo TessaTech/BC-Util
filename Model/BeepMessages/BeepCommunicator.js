@@ -167,7 +167,7 @@ BeepMessages.BeepCommunicator = class
 			message: message,
 			messageColor: messageColor
 		}
-		this.gameBeeps.SendGenericBeep(memberNumber, beepType)
+		this.gameBeeps.SendGenericBeep(memberNumber, beepType, true)
 	}
 
 }

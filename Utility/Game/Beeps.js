@@ -52,9 +52,14 @@ Utility.Game.Beeps = class
 		SendGenericBeep(memberNumber, "Leash")
 	}
 
-	SendGenericBeep(memberNumber, type)
+	SendGenericBeep(memberNumber, type, withoutRoomName)
 	{
-		ServerSend("AccountBeep", { MemberNumber: memberNumber, BeepType: type });
+		let beepData = { MemberNumber: memberNumber, BeepType: type }
+		if(withoutRoomName === true)
+		{
+			beepData.IsSecret = true;
+		}
+		ServerSend("AccountBeep", beepData);
 	}
 
 }
