@@ -53,6 +53,7 @@ function onLoad(event)
 	AddScriptFile("Utility/Game/UserInterface.js")
 	AddScriptFile("Utility/Game/Wardrobe.js")
 	AddScriptFile("Utility/Game/ScreenProperties.js")
+	AddScriptFile("Utility/Game/Server.js")
 	
 	AddScriptFile("Model/WardrobeUtilities/WardrobeUtilities.js")
 	AddScriptFile("Model/AppearanceUtilities/AppearanceUtilities.js")

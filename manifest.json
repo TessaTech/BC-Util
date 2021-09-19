@@ -49,6 +49,7 @@
 				"Utility/Game/UserInterface.js",
 				"Utility/Game/Wardrobe.js",
 				"Utility/Game/ScreenProperties.js",
+				"Utility/Game/Server.js",
 				
 				"Model/WardrobeUtilities/WardrobeUtilities.js",
 				"Model/AppearanceUtilities/AppearanceUtilities.js",
