@@ -27,6 +27,7 @@
             "run_at": "document_end",
 			"matches": [
 				"*://*.bondageprojects.com/*",
+				"*://*.bondage-europe.com/*",
 				"*://*.bondageprojects.elementfx.com/*"
 			],
             "all_frames": true,
